@@ -16,6 +16,7 @@ class AuditFindingController extends Controller
     {
         $findings = AuditFinding::where('entity_id', $context->entity->id)
             ->when($context->role !== 'demo_viewer', fn ($q) => $q->where('responsible_id', $request->user()->id)->where('status', '!=', 'draft'))
+            ->when(in_array($context->role, ['viewer', 'auditor'], true), fn ($q) => $q->whereRaw('1 = 0'))
             ->orderBy('due_date')->paginate(15);
 
         return view('audits.actions', compact('context', 'findings'));

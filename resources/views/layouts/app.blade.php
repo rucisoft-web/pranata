@@ -29,7 +29,7 @@
             @if(request()->attributes->get('demo_mode'))
             <form action="{{ route('demo.dashboard') }}" method="get" class="entity-switch"><label for="demo_entity">Perusahaan contoh</label><select id="demo_entity" name="entity">@foreach(\App\Models\Entity::where('is_demo', true)->orderBy('name')->get() as $company)<option value="{{ $company->id }}" @selected($company->id === $context->entity->id)>{{ $company->name }}</option>
 @endforeach</select><button class="button secondary small">Buka</button></form><div class="user-menu"><span class="badge demo-badge">Tamu · Hanya baca</span><a href="{{ route('login') }}">Masuk akun</a></div>
-            
+
 @else
             <form action="{{ route('entity.switch') }}" method="post" class="entity-switch">
                 @csrf
@@ -37,7 +37,7 @@
                 <select id="entity_id" name="entity_id" aria-label="Perusahaan aktif">
                     @foreach(auth()->user()->entities()->orderBy('name')->get() as $entity)
                         <option value="{{ $entity->id }}" @selected($entity->id === $context->entity->id)>{{ $entity->name }}</option>
-                    
+
 @endforeach
                 </select>
                 <button class="button secondary small" type="submit">Buka</button>
@@ -45,7 +45,7 @@
             <div class="user-menu"><span>{{ auth()->user()->name }}<small>{{ str_replace('_', ' ', $context->role) }} · <a href="{{ route('mfa.security') }}">Keamanan</a></small></span>
                 <form method="post" action="{{ route('logout') }}">@csrf<button class="button secondary small">Keluar</button></form>
             </div>
-            
+
 @endif
         </header>
         <main>

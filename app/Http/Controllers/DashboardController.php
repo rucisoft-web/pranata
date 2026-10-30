@@ -22,10 +22,9 @@ class DashboardController extends Controller
         $complianceStats = ['total' => (clone $compliance)->count(), 'pending' => (clone $compliance)->where('status', 'submitted')->count(), 'late' => (clone $compliance)->where('status', '!=', 'fulfilled')->whereDate('due_date', '<', today())->count()];
         $findings = \App\Models\AuditFinding::where('entity_id', $context->entity->id);
         if (! $context->canManageAudit() && $context->role !== 'demo_viewer') {
-            $findings->where(function ($q) use ($context) {
-                $q->where('responsible_id', auth()->id());
-                if ($context->role === 'auditor') { $q->orWhereHas('engagement', fn ($a) => $a->where('lead_id', auth()->id())); }
-            });
+            if ($context->role === 'viewer') { $findings->whereRaw('1 = 0'); }
+            elseif ($context->role === 'auditor') { $findings->whereHas('engagement', fn ($a) => $a->where('lead_id', auth()->id())); }
+            else { $findings->where('responsible_id', auth()->id()); }
         }
         $findingStats = ['open' => (clone $findings)->whereNotIn('status', ['draft', 'closed'])->count(), 'late' => (clone $findings)->whereNotIn('status', ['draft', 'closed'])->whereDate('due_date', '<', today())->count()];
 

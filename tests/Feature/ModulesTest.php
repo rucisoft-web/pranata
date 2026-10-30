@@ -163,4 +163,12 @@ class ModulesTest extends TestCase
         $this->post('/audits', $data)->assertRedirect();
         $this->signIn($this->officer)->post('/audits', $data)->assertForbidden();
     }
+
+    public function test_downgraded_finding_owner_loses_all_finding_visibility(): void
+    {
+        $finding = $this->finding();
+        $this->pic->entities()->updateExistingPivot($this->entity->id, ['role' => 'viewer']);
+        $this->signIn($this->pic)->get('/audit-actions')->assertOk()->assertDontSee($finding->title);
+        $this->get('/audit-findings/'.$finding->id)->assertNotFound();
+    }
 }

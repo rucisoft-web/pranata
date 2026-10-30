@@ -10,7 +10,7 @@ for (let attempt=0; attempt<40; attempt++) {
 }
 if (!ready) throw new Error('PRANATA preview server did not start');
 const browser = await chromium.launch({headless:true});
-const context = await browser.newContext({viewport:{width:1440,height:1080},deviceScaleFactor:1});
+const context = await browser.newContext({viewport:{width:1440,height:1080},deviceScaleFactor:1,reducedMotion:'reduce'});
 const page = await context.newPage();
 const errors=[];
 page.on('pageerror',error=>errors.push(error.message));
@@ -20,7 +20,8 @@ async function open(path) {
 }
 async function loadImages() {
     for (const image of await page.locator('img').all()) { await image.scrollIntoViewIfNeeded(); await image.evaluate(img=>img.decode()); }
-    await page.evaluate(()=>window.scrollTo(0,0));
+    await page.evaluate(()=>window.scrollTo({top:0,left:0,behavior:'instant'}));
+    await page.waitForFunction(()=>window.scrollY===0);
 }
 try {
     await open('/demo');
@@ -37,6 +38,7 @@ try {
     await page.screenshot({path:'public/images/screenshots/audit.png'});
     for (const path of ['/demo/risks','/demo/obligations','/demo/audit-actions']) await open(path);
     await open('/'); await loadImages();
+    await page.screenshot({path:'artifacts/landing-preview.png'});
     await page.screenshot({path:'artifacts/landing-desktop.png',fullPage:true});
     if (await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth+1)) throw new Error('Desktop landing horizontal overflow');
     await page.setViewportSize({width:390,height:844});
