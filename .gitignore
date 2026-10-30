@@ -3,6 +3,7 @@
 !/.env.example
 /vendor/
 /node_modules/
+/artifacts/
 /.phpunit.cache/
 /storage/*.key
 /storage/logs/*

@@ -6,7 +6,7 @@
 <form method="get" class="filters">
     <div><label for="q">Cari kode atau judul</label><input id="q" name="q" value="{{ request('q') }}" maxlength="100" placeholder="Cari risiko…"></div>
     <div><label for="status">Status</label><select id="status" name="status"><option value="">Semua status</option>@foreach(config('grc.statuses') as $key => $label)<option value="{{ $key }}" @selected(request('status') === $key)>{{ $label }}</option>@endforeach</select></div>
-    <button class="button secondary" type="submit">Terapkan</button><a href="{{ route('risks.index') }}">Reset</a>
+    <button class="button secondary" type="submit">Terapkan</button><a href="{{ workspace_route('risks.index') }}">Reset</a>
 </form>
 @include('risks.table')
 <div class="pagination">{{ $risks->links('components.pagination') }}</div>

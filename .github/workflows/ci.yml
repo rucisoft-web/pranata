@@ -31,11 +31,13 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
-          extensions: mbstring, pdo_mysql, dom, xml, curl, fileinfo
+          extensions: mbstring, pdo_mysql, dom, xml, xmlwriter, curl, fileinfo
           coverage: none
           tools: composer:v2
       - name: Prepare environment
-        run: cp .env.example .env
+        run: |
+          cp .env.example .env
+          mkdir -p artifacts
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist --no-progress
       - name: Validate Composer manifest
@@ -48,4 +50,29 @@ jobs:
           php artisan view:cache
           php artisan route:list --except-vendor
       - name: MySQL feature tests
-        run: php artisan test
+        run: php artisan test --log-junit artifacts/phpunit.xml
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Browser tooling
+        run: |
+          npm install --no-save --package-lock=false playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Seed isolated demonstration data
+        run: |
+          php artisan migrate --force
+          php artisan db:seed --class=DemoSeeder --force
+      - name: Capture real application screens and test responsive layouts
+        run: |
+          php artisan serve --host=127.0.0.1 --port=8000 > /tmp/pranata-preview.log 2>&1 &
+          node scripts/capture.mjs
+      - name: Upload review assets
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pranata-review-assets
+          path: |
+            composer.lock
+            public/images/screenshots/*.png
+            artifacts/
+          retention-days: 7

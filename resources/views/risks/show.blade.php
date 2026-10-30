@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', $risk->code)
 @section('content')
-<div class="page-heading"><div><div class="eyebrow">{{ $risk->code }} · {{ $risk->category }}</div><h1>{{ $risk->title }}</h1><p><span class="badge {{ $risk->status }}">{{ config('grc.statuses')[$risk->status] }}</span> <span class="badge neutral">Inheren {{ $risk->score }} · {{ $risk->level }}</span></p></div><a href="{{ route('risks.index') }}">← Register risiko</a></div>
+<div class="page-heading"><div><div class="eyebrow">{{ $risk->code }} · {{ $risk->category }}</div><h1>{{ $risk->title }}</h1><p><span class="badge {{ $risk->status }}">{{ config('grc.statuses')[$risk->status] }}</span> <span class="badge neutral">Inheren {{ $risk->score }} · {{ $risk->level }}</span></p></div><a href="{{ workspace_route('risks.index') }}">← Register risiko</a></div>
 <div class="detail-grid"><section class="panel detail-panel">
 <h2>Konteks dan penilaian</h2>
 <dl>

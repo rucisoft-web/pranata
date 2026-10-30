@@ -23,15 +23,16 @@ class AuthController extends Controller
         if (RateLimiter::tooManyAttempts($key, 5)) {
             throw ValidationException::withMessages(['email' => 'Terlalu banyak percobaan. Coba kembali setelah satu menit.']);
         }
-        if (! Auth::attempt($data)) {
+        if (! Auth::attempt($data + ['is_demo_guest' => false])) {
             RateLimiter::hit($key, 60);
             throw ValidationException::withMessages(['email' => 'Email atau kata sandi tidak sesuai.']);
         }
         RateLimiter::clear($key);
         $request->session()->regenerate();
         $request->session()->forget('entity_id');
+        $request->session()->forget(['mfa', 'mfa_setup', 'mfa_recovery_plain']);
 
-        return redirect()->route('dashboard');
+        return redirect()->route($request->user()->mfa_confirmed_at ? 'mfa.challenge' : 'mfa.setup');
     }
 
     public function destroy(Request $request)

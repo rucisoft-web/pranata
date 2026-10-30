@@ -29,6 +29,6 @@
 <label for="response">Respons yang diusulkan</label><select id="response" name="response" required>@foreach(config('grc.responses') as $key => $text)<option value="{{ $key }}" @selected(old('response', $risk->response) === $key)>{{ $text }}</option>@endforeach</select>
 <label for="treatment_plan">Rencana penanganan / alasan usulan penerimaan</label><textarea id="treatment_plan" name="treatment_plan" maxlength="5000" rows="4" required>{{ old('treatment_plan', $risk->treatment_plan) }}</textarea>
 <p class="muted small">Persetujuan catatan risiko belum merupakan otorisasi formal penerimaan risiko residual.</p>
-<div class="form-actions"><button class="button" type="submit">Simpan draf</button><a class="button secondary" href="{{ $risk->exists ? route('risks.show', $risk) : route('risks.index') }}">Batal</a></div>
+<div class="form-actions"><button class="button" type="submit">Simpan draf</button><a class="button secondary" href="{{ $risk->exists ? workspace_route('risks.show', $risk) : workspace_route('risks.index') }}">Batal</a></div>
 </form>
 @endsection

@@ -9,18 +9,25 @@
 <body>
 <div class="shell">
     <aside class="sidebar">
-        <a class="brand" href="{{ route('dashboard') }}"><span class="brand-mark">P</span> PRANATA</a>
+        <a class="brand" href="{{ workspace_route('dashboard') }}"><span class="brand-mark">P</span> PRANATA</a>
         <p class="brand-sub">GOVERNANCE · RISK · COMPLIANCE</p>
         <div class="nav-label">RUANG KERJA</div>
         <nav aria-label="Menu utama">
-            <a class="{{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">Dashboard eksekutif</a>
-            <a class="{{ request()->routeIs('risks.*') ? 'active' : '' }}" href="{{ route('risks.index') }}">Manajemen risiko</a>
+            <a class="{{ request()->routeIs('dashboard', 'demo.dashboard') ? 'active' : '' }}" href="{{ workspace_route('dashboard') }}">Dashboard eksekutif</a>
+            <a class="{{ request()->routeIs('risks.*', 'demo.risks.*') ? 'active' : '' }}" href="{{ workspace_route('risks.index') }}">Manajemen risiko</a>
+            <a class="{{ request()->routeIs('obligations.*', 'demo.obligations.*') ? 'active' : '' }}" href="{{ workspace_route('obligations.index') }}">Register kewajiban</a>
+            <a class="{{ request()->routeIs('compliance.*', 'demo.compliance.*') ? 'active' : '' }}" href="{{ workspace_route('compliance.index') }}">Kalender kepatuhan</a>
+            @if($context->canReadAudit())<a class="{{ request()->routeIs('audits.*', 'demo.audits.*') ? 'active' : '' }}" href="{{ workspace_route('audits.index') }}">Audit internal</a>@endif
+            <a class="{{ request()->routeIs('findings.*', 'demo.findings.*') ? 'active' : '' }}" href="{{ workspace_route('findings.index') }}">Tindak lanjut saya</a>
         </nav>
-        <div class="sidebar-note">Fondasi GRC korporasi<br><small>Versi awal · risiko inheren</small></div>
+        <div class="sidebar-note">GRC korporasi<br><small>Risiko · kepatuhan · audit</small></div>
         <div class="sidebar-footer">by <strong>Rucisoft</strong><br><small>Tata Kelola Terarah.<br>Risiko Terkendali.</small></div>
     </aside>
     <div class="workspace">
         <header class="topbar">
+            @if(request()->attributes->get('demo_mode'))
+            <form action="{{ route('demo.dashboard') }}" method="get" class="entity-switch"><label for="demo_entity">Perusahaan contoh</label><select id="demo_entity" name="entity">@foreach(\App\Models\Entity::where('is_demo', true)->orderBy('name')->get() as $company)<option value="{{ $company->id }}" @selected($company->id === $context->entity->id)>{{ $company->name }}</option>@endforeach</select><button class="button secondary small">Buka</button></form><div class="user-menu"><span class="badge demo-badge">Tamu · Hanya baca</span><a href="{{ route('login') }}">Masuk akun</a></div>
+            @else
             <form action="{{ route('entity.switch') }}" method="post" class="entity-switch">
                 @csrf
                 <label for="entity_id">Perusahaan</label>
@@ -31,11 +38,13 @@
                 </select>
                 <button class="button secondary small" type="submit">Buka</button>
             </form>
-            <div class="user-menu"><span>{{ auth()->user()->name }}<small>{{ str_replace('_', ' ', $context->role) }}</small></span>
+            <div class="user-menu"><span>{{ auth()->user()->name }}<small>{{ str_replace('_', ' ', $context->role) }} · <a href="{{ route('mfa.security') }}">Keamanan</a></small></span>
                 <form method="post" action="{{ route('logout') }}">@csrf<button class="button secondary small">Keluar</button></form>
             </div>
+            @endif
         </header>
         <main>
+            @if($context->entity->is_demo)<div class="demo-notice"><strong>DATA CONTOH / SIMULASI</strong><span>Profil mengacu laporan tahunan 2025. Risiko, kewajiban, tenggat, temuan, dan bukti adalah skenario demonstrasi; bukan penilaian atau temuan aktual perusahaan.</span></div>@endif
             @if(session('success'))<div class="notice" role="status">{{ session('success') }}</div>@endif
             @if($errors->any())<div class="notice error" role="alert"><strong>Periksa kembali isian berikut:</strong><ul>@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>@endif
             @yield('content')

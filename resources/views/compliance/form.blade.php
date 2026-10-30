@@ -1,0 +1,13 @@
+@extends('layouts.app')
+@section('title', 'Kewajiban kepatuhan')
+@section('content')
+<h1>{{ $obligation->exists ? 'Ubah kewajiban' : 'Catat kewajiban' }}</h1><form class="panel form-panel" method="post" action="{{ $obligation->exists ? route('obligations.update', $obligation) : route('obligations.store') }}">@csrf
+@if($obligation->exists)@method('PUT')<input type="hidden" name="revision" value="{{ $obligation->revision }}">@endif
+<div class="form-grid">@foreach(['code' => 'Kode', 'title' => 'Judul kewajiban', 'clause' => 'Pasal / klausul'] as $field => $label)<div><label for="{{ $field }}">{{ $label }}</label><input id="{{ $field }}" name="{{ $field }}" value="{{ old($field, $obligation->$field) }}" required maxlength="{{ $field === 'code' ? 40 : 255 }}"></div>@endforeach
+<div><label for="regulatory_source_id">Sumber dan versi</label><select id="regulatory_source_id" name="regulatory_source_id" required><option value="">Pilih sumber</option>@foreach($sources as $source)<option value="{{ $source->id }}" @selected(old('regulatory_source_id', $obligation->regulatory_source_id) == $source->id)>{{ $source->reference }} · {{ $source->version }}</option>@endforeach</select></div>
+@foreach(['frequency' => ['Frekuensi', 'frequencies'], 'criticality' => ['Kritikalitas', 'criticalities'], 'applicability' => ['Keberlakuan', 'applicabilities']] as $field => [$label, $key])<div><label for="{{ $field }}">{{ $label }}</label><select id="{{ $field }}" name="{{ $field }}" required>@foreach(config('modules.'.$key) as $value => $text)<option value="{{ $value }}" @selected(old($field, $obligation->$field) === $value)>{{ $text }}</option>@endforeach</select></div>@endforeach
+<div><label for="responsible_id">PIC</label><select id="responsible_id" name="responsible_id" required>@foreach($members as $member)<option value="{{ $member->id }}" @selected(old('responsible_id', $obligation->responsible_id) == $member->id)>{{ $member->name }}</option>@endforeach</select></div></div>
+<label for="description">Uraian dan bukti yang dipersyaratkan</label><textarea id="description" name="description" rows="5" required maxlength="10000">{{ old('description', $obligation->description) }}</textarea>
+<label for="applicability_reason">Dasar penelaahan keberlakuan</label><textarea id="applicability_reason" name="applicability_reason" rows="4" required maxlength="5000">{{ old('applicability_reason', $obligation->applicability_reason) }}</textarea>
+<div class="form-actions"><button class="button">Simpan kewajiban</button><a href="{{ workspace_route('obligations.index') }}">Batal</a></div></form>
+@endsection

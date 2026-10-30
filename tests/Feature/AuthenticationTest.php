@@ -17,9 +17,9 @@ class AuthenticationTest extends TestCase
         $entity = Entity::create(['code' => 'TEST', 'name' => 'PT Demo']);
         $user->entities()->attach($entity->id, ['role' => 'viewer']);
         $this->get('/login')->assertOk()->assertSee('PRANATA');
-        $this->post('/login', ['email' => 'USER@example.test', 'password' => 'Testing-Only123!'])->assertRedirect('/dashboard');
+        $this->post('/login', ['email' => 'USER@example.test', 'password' => 'Testing-Only123!'])->assertRedirect('/mfa/setup');
         $this->assertAuthenticatedAs($user);
-        $this->get('/dashboard')->assertOk();
+        $this->get('/dashboard')->assertRedirect('/mfa/setup');
         $this->post('/logout')->assertRedirect('/login');
         $this->assertGuest();
     }
@@ -37,6 +37,6 @@ class AuthenticationTest extends TestCase
     public function test_authenticated_user_without_membership_cannot_access_dashboard(): void
     {
         $user = User::create(['name' => 'No Access', 'email' => 'no@example.test', 'password' => 'Testing-Only123!']);
-        $this->actingAs($user)->get('/dashboard')->assertForbidden();
+        $this->signIn($user)->get('/dashboard')->assertForbidden();
     }
 }

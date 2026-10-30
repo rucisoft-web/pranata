@@ -38,6 +38,7 @@ return [
     */
 
     'guards' => [
+        'demo' => ['driver' => 'session', 'provider' => 'users'],
         'web' => [
             'driver' => 'session',
             'provider' => 'users',
