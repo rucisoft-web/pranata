@@ -179,4 +179,13 @@ class RiskWorkflowTest extends TestCase
         $risk->update(['title' => '<script>alert(1)</script>']);
         $this->actingAs($this->owner)->get('/risks/'.$risk->id)->assertOk()->assertDontSee('<script>alert(1)</script>', false)->assertSee('&lt;script&gt;alert(1)&lt;/script&gt;', false);
     }
+
+    public function test_register_pagination_preserves_filters(): void
+    {
+        for ($i = 1; $i <= 16; $i++) {
+            Risk::create(array_merge($this->payload(), ['code' => 'RSK-'.$i, 'entity_id' => $this->entity->id, 'owner_id' => $this->owner->id]));
+        }
+        $this->actingAs($this->owner)->get('/risks?status=draft')->assertOk()->assertSee('Berikutnya')->assertSee('status=draft', false);
+        $this->get('/risks?status=draft&page=2')->assertOk()->assertSee('Sebelumnya')->assertSee('Halaman 2');
+    }
 }

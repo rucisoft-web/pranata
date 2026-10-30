@@ -9,6 +9,6 @@
     <button class="button secondary" type="submit">Terapkan</button><a href="{{ route('risks.index') }}">Reset</a>
 </form>
 @include('risks.table')
-<div class="pagination">{{ $risks->links('pagination::simple-default') }}</div>
+<div class="pagination">{{ $risks->links('components.pagination') }}</div>
 </section>
 @endsection
