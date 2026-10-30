@@ -1,0 +1,18 @@
+{
+  "$schema": "https://getcomposer.org/schema.json",
+  "name": "rucisoft/pranata",
+  "type": "project",
+  "description": "PRANATA — Governance, Risk and Compliance untuk BUMN dan perusahaan terbuka",
+  "license": "proprietary",
+  "require": {"php": "^8.3", "laravel/framework": "^13.17"},
+  "require-dev": {"phpunit/phpunit": "^12.5.12", "mockery/mockery": "^1.6", "nunomaduro/collision": "^8.6"},
+  "autoload": {"psr-4": {"App\\": "app/", "Database\\Seeders\\": "database/seeders/"}},
+  "autoload-dev": {"psr-4": {"Tests\\": "tests/"}},
+  "scripts": {
+    "test": "@php artisan test",
+    "post-autoload-dump": ["Illuminate\\Foundation\\ComposerScripts::postAutoloadDump", "@php artisan package:discover --ansi"]
+  },
+  "config": {"optimize-autoloader": true, "preferred-install": "dist", "sort-packages": true},
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}
