@@ -15,7 +15,7 @@ Target eksklusif: BUMN, perusahaan terbuka, serta BUMN terbuka dan grup usahanya
 
 ## Tahap berikutnya — fondasi operasional
 
-1. MFA/SSO dan pengelolaan siklus hidup akun, sesi, hak, serta delegasi.
+1. SSO dan pengelolaan siklus hidup akun, sesi, hak, serta delegasi. MFA TOTP wajib sudah tersedia.
 2. Master unit, proses, sasaran RJPP/RKAP, dan struktur grup.
 3. Metodologi berversi dengan definisi kemungkinan/dampak, toleransi dan selera risiko.
 4. Penilaian ulang historis, residual, kontrol, bukti dan pengujian efektivitas.
@@ -40,3 +40,7 @@ Target eksklusif: BUMN, perusahaan terbuka, serta BUMN terbuka dan grup usahanya
 - AI opsional setelah kebijakan data dan otorisasi tersedia.
 
 Peraturan dan batas materialitas tidak ditanam sebagai angka tetap. Register regulasi dan analisis keberlakuan harus ditelaah Legal/Compliance berdasarkan status entitas, sektor, jenis efek, dan periode berlaku.
+
+## Tambahan yang sudah tersedia
+
+Kepatuhan (sumber, kewajiban, snapshot periode, bukti, verifikasi), audit internal (penugasan, kertas kerja, temuan, laporan, tindak lanjut), MFA TOTP/recovery, demo tamu tiga perusahaan, tema eksekutif terang, dan landing page dengan screenshot aplikasi. Pengembangan lanjutan memperdalam otomatisasi periode, delegasi, laporan PDF, audit universe dan tim, serta perlindungan bukti.

@@ -35,7 +35,11 @@ class MfaTest extends TestCase
     public function test_enrollment_encrypts_secret_and_displays_recovery_codes_once(): void
     {
         $user = $this->account();
-        $this->actingAs($user)->get('/mfa/setup')->assertOk()->assertSee('data:image/svg+xml;base64:', false)->assertHeader('Cache-Control', 'no-store, private');
+        $response = $this->actingAs($user)->get('/mfa/setup')->assertOk()->assertSee('QR untuk mengatur aplikasi authenticator');
+        $dom = new \DOMDocument;
+        @$dom->loadHTML($response->getContent());
+        $this->assertStringStartsWith('data:image/svg+xml;base64,', $dom->getElementsByTagName('img')->item(0)->getAttribute('src'));
+        $this->assertStringContainsString('no-store', $response->headers->get('Cache-Control'));
         $secret = session('mfa_setup.secret');
         $code = (new Google2FA)->getCurrentOtp($secret);
         $this->post('/mfa/setup', ['current_password' => 'Testing-Only123!', 'code' => $code])->assertRedirect('/mfa/recovery');

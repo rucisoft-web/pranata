@@ -15,9 +15,9 @@ Satu instalasi untuk satu grup perusahaan; tidak ada klaim isolasi SaaS lintas p
 
 ## Autentikasi
 
-Email disimpan huruf kecil oleh perintah provision. Password di-hash melalui cast Laravel `hashed`; plaintext tidak disimpan atau ditulis ke log. Login menggunakan pesan kesalahan umum, batas 5 kegagalan per kombinasi email/IP per menit, serta pembatas route per IP. Sesi diregenerasi saat login dan diinvalidasi saat logout. `entity_id` di sesi selalu dicocokkan kembali ke keanggotaan database. Tidak ada token API, registrasi publik, atau kredensial bawaan.
+Email disimpan huruf kecil oleh perintah provision. Password di-hash melalui cast Laravel `hashed`; plaintext tidak disimpan atau ditulis ke log. Login menggunakan pesan kesalahan umum, batas 5 kegagalan per kombinasi email/IP per menit, serta pembatas route per IP. Sesi diregenerasi saat login dan diinvalidasi saat logout. `entity_id` di sesi selalu dicocokkan kembali ke keanggotaan database. Tidak ada token API, registrasi publik, atau kredensial bawaan. MFA wajib diterapkan sebelum semua akses data internal; lihat MODULES.md.
 
-Belum tersedia MFA, SSO, reset password, verifikasi email, pemutusan seluruh sesi dari panel admin, dan audit login. Reverse proxy tepercaya perlu dikonfigurasi sesuai deployment sebelum mengandalkan alamat IP untuk pembatasan.
+MFA TOTP, pemulihan sekali pakai, dan security events telah tersedia. SSO, reset password, verifikasi email, pemutusan seluruh sesi dari panel admin, dan audit login password belum tersedia. Reverse proxy tepercaya perlu dikonfigurasi sesuai deployment sebelum mengandalkan alamat IP untuk pembatasan.
 
 ## Risiko dan persetujuan
 
@@ -40,3 +40,7 @@ Belum ada endpoint integrasi aktif. Kontrak mendatang hanya membawa referensi ek
 - `audit_events`: snapshot perubahan risiko.
 
 Sasaran dan proses masih berupa teks pada risiko; master sasaran/proses adalah tahap berikutnya. Dashboard menghitung seluruh status, bukan hanya risiko disahkan, dan label menjelaskannya. Tidak ada rata-rata skor ordinal atau agregasi risiko grup.
+
+## Modul tambahan
+
+Kepatuhan memakai sumber berversi dan snapshot periode; audit memiliki akses penugasan dan verifikasi tindakan. Demo menggunakan guard request terpisah, entitas is_demo, dan route GET-only. Rincian pada MODULES.md dan DEMO_DATA.md.
