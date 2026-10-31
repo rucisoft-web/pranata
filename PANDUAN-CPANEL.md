@@ -66,12 +66,10 @@ Untuk domain yang sudah ada: *Domains* › Manage › ubah Document Root menjadi
 ### Pilihan 2: domain utama yang document root-nya terkunci di `public_html`
 
 1. Pindahkan (atau salin) **seluruh isi** `pranata/public` ke `public_html`, termasuk file tersembunyi `.htaccess` (di File Manager: *Settings* › centang *Show Hidden Files*).
-2. Edit `public_html/index.php`, ganti tiga baris yang berisi `__DIR__.'/../` menjadi:
+2. Edit `public_html/index.php`, ubah baris `$root = __DIR__.'/..';` menjadi:
 
 ```php
-if (file_exists($maintenance = __DIR__.'/../pranata/storage/framework/maintenance.php')) {
-require __DIR__.'/../pranata/vendor/autoload.php';
-$app = require_once __DIR__.'/../pranata/bootstrap/app.php';
+$root = __DIR__.'/../pranata';
 ```
 
 3. Setiap kali memperbarui program, salin ulang isi `pranata/public` ke `public_html` (kecuali `index.php` yang sudah diedit).
@@ -200,6 +198,7 @@ Selalu **backup database** dulu (*phpMyAdmin* › Export, atau *Backup* di cPane
 
 | Gejala | Solusi |
 |---|---|
+| Halaman "PRANATA belum siap" | Ikuti pesan di halaman itu (versi PHP, folder `vendor`, file `.env`, `APP_KEY`, atau izin folder). |
 | Error 500 tanpa keterangan | Lihat `pranata/storage/logs/laravel.log`. Untuk sementara boleh `APP_DEBUG=true`, lalu kembalikan ke `false`. |
 | `Your PHP version … does not satisfy` | Ubah PHP domain ke 8.3 atau lebih baru di *MultiPHP Manager*, dan pastikan cron/Terminal juga memakai PHP 8.3+. |
 | `could not find driver` | Aktifkan ekstensi **pdo_mysql**. |

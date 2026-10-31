@@ -6,12 +6,14 @@
     <div class="eyebrow">PRANATA · {{ $code }}</div>
     <h1>@yield('title')</h1>
     @php($detail = isset($exception) ? trim((string) $exception->getMessage()) : '')
+    @php($signedIn = rescue(fn () => auth()->check(), false, false))
+    @php($back = rescue(fn () => url()->previous(), url('/'), false))
     <p>{{ $detail !== '' && in_array($code, [403, 409, 422, 503], true) ? $detail : $message }}</p>
     @if($hint ?? null)<p class="muted small">{{ $hint }}</p>
 @endif
     <hr>
-    <a class="button full" href="{{ url()->previous() !== url()->current() ? url()->previous() : url('/') }}">← Kembali</a>
-    <a class="button secondary full" href="{{ auth()->check() ? route('dashboard') : route('home') }}">{{ auth()->check() ? 'Ke dashboard' : 'Ke halaman depan' }}</a>
+    <a class="button full" href="{{ $back !== url()->current() ? $back : url('/') }}">← Kembali</a>
+    <a class="button secondary full" href="{{ url($signedIn ? '/dashboard' : '/') }}">{{ $signedIn ? 'Ke dashboard' : 'Ke halaman depan' }}</a>
 </main>
 </body>
 </html>
