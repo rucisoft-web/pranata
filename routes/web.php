@@ -12,6 +12,7 @@ use App\Http\Controllers\ComplianceController;
 use App\Http\Controllers\AuditController;
 use App\Http\Controllers\AuditFindingController;
 use App\Http\Controllers\EvidenceController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'landing')->name('home');
@@ -41,6 +42,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/mfa/challenge', [MfaController::class, 'verify'])->middleware('throttle:10,1')->name('mfa.verify');
     Route::middleware(RequireMfa::class)->group(function () {
         Route::get('/security', [MfaController::class, 'security'])->name('mfa.security');
+        Route::post('/security/password', [AuthController::class, 'changePassword'])->middleware('throttle:10,1')->name('password.change');
         Route::get('/mfa/recovery', [MfaController::class, 'recovery'])->name('mfa.recovery');
         Route::post('/mfa/recovery', [MfaController::class, 'rotate'])->middleware('throttle:10,1')->name('mfa.rotate');
         Route::post('/entity', [EntityController::class, 'switch'])->name('entity.switch');
@@ -65,5 +67,12 @@ Route::middleware('auth')->group(function () {
         Route::post('/audit-findings/{finding}/{operation}', [AuditFindingController::class, 'transition'])->where(['finding' => '[0-9]+', 'operation' => 'submit|close|return'])->name('findings.transition');
         Route::post('/evidence/{type}/{subject}', [EvidenceController::class, 'store'])->where(['type' => 'compliance|finding|procedure', 'subject' => '[0-9]+'])->name('evidence.store');
         Route::get('/evidence/{evidence}', [EvidenceController::class, 'download'])->whereNumber('evidence')->name('evidence.download');
+        Route::get('/users', [UserController::class, 'index'])->name('users.index');
+        Route::post('/users', [UserController::class, 'store'])->name('users.store');
+        Route::put('/users/{user}', [UserController::class, 'update'])->whereNumber('user')->name('users.update');
+        Route::delete('/users/{user}', [UserController::class, 'destroy'])->whereNumber('user')->name('users.destroy');
+        Route::post('/users/{user}/password', [UserController::class, 'password'])->whereNumber('user')->middleware('throttle:10,1')->name('users.password');
+        Route::post('/users/{user}/mfa-reset', [UserController::class, 'mfa'])->whereNumber('user')->middleware('throttle:10,1')->name('users.mfa');
+        Route::post('/entities', [UserController::class, 'entity'])->name('entities.store');
     });
 });

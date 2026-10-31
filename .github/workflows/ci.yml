@@ -26,6 +26,9 @@ jobs:
       DB_DATABASE: pranata_test
       DB_USERNAME: root
       DB_PASSWORD: ci-only-password
+      APP_URL: http://127.0.0.1:8000
+      SESSION_SECURE_COOKIE: false
+      PRANATA_GUEST_LOGIN: true
     steps:
       - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2

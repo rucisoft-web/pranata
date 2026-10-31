@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Risk extends Model
 {
+    use \App\Models\Concerns\IntegerKeys;
+
+    protected array $integerKeys = ['entity_id', 'owner_id', 'approved_by'];
     protected $fillable = [
         'entity_id', 'owner_id', 'code', 'title', 'category', 'objective', 'process',
         'cause', 'event', 'impact_description', 'likelihood', 'impact', 'assessment_reason',

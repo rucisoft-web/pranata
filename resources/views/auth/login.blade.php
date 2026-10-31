@@ -17,7 +17,7 @@
         <label for="password">Kata sandi</label><input id="password" type="password" name="password" required autocomplete="current-password" maxlength="1024">
         <button class="button full" type="submit">Masuk ke PRANATA</button>
     </form>
-    @if(config('demo.enabled'))<a class="button secondary full" href="{{ route('demo.dashboard') }}">Masuk sebagai Tamu · Lihat Data Contoh</a>
+    @if(demo_available())<a class="button secondary full" href="{{ route('demo.dashboard') }}">Masuk sebagai Tamu · Lihat Data Contoh</a>
 @endif
     <p class="muted small">Hubungi administrator perusahaan untuk memperoleh akses.</p>
 </main>

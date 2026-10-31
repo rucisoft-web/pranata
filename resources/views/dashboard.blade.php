@@ -8,7 +8,7 @@
     <div class="metric"><span>Total risiko</span><strong>{{ $stats['total'] }}</strong><small>Seluruh status pencatatan</small></div>
     <div class="metric"><span>Tinggi & kritis</span><strong class="danger">{{ $stats['high'] }}</strong><small>Skor inheren ≥12 · seluruh status</small></div>
     <div class="metric"><span>Menunggu tinjauan</span><strong>{{ $stats['submitted'] }}</strong><small>Memerlukan peninjau independen</small></div>
-    <div class="metric"><span>Jadwal review terlewat</span><strong>{{ $stats['overdue'] }}</strong><small>Tanggal review sebelum hari ini (UTC)</small></div>
+    <div class="metric"><span>Jadwal review terlewat</span><strong>{{ $stats['overdue'] }}</strong><small>Tanggal review sebelum hari ini</small></div>
 </div>
 <div class="overview-grid"><section class="panel detail-panel"><div class="section-kicker">PROFIL RISIKO</div><h2>Peta risiko inheren</h2><p class="muted small">Jumlah risiko pada setiap sel · seluruh status.</p><div class="heatmap" role="img" aria-label="Matriks kemungkinan dan dampak risiko skala satu sampai lima">
 @for($likelihood = 5; $likelihood >= 1; $likelihood--)<span class="axis">{{ $likelihood }}</span>@for($impact = 1; $impact <= 5; $impact++)@php($score = $likelihood * $impact)<div class="heat-cell {{ $score >= 20 ? 'critical' : ($score >= 12 ? 'high' : ($score >= 6 ? 'medium' : 'low')) }}" title="Kemungkinan {{ $likelihood }}, dampak {{ $impact }}">{{ $heatmap->get($likelihood.'-'.$impact)?->total ?? '·' }}</div>

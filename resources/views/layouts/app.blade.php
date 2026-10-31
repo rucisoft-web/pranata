@@ -20,6 +20,8 @@
             @if($context->canReadAudit())<a class="{{ request()->routeIs('audits.*', 'demo.audits.*') ? 'active' : '' }}" href="{{ workspace_route('audits.index') }}">Audit internal</a>
 @endif
             <a class="{{ request()->routeIs('findings.*', 'demo.findings.*') ? 'active' : '' }}" href="{{ workspace_route('findings.index') }}">Tindak lanjut saya</a>
+            @if($context->canManageUsers() && ! request()->attributes->get('demo_mode'))<a class="{{ request()->routeIs('users.*') ? 'active' : '' }}" href="{{ route('users.index') }}">Pengguna & akses</a>
+@endif
         </nav>
         <div class="sidebar-note">GRC korporasi<br><small>Risiko · kepatuhan · audit</small></div>
         <div class="sidebar-footer">by <strong>Rucisoft</strong><br><small>Tata Kelola Terarah.<br>Risiko Terkendali.</small></div>

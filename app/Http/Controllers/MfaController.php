@@ -41,7 +41,7 @@ class MfaController extends Controller
 
     public function challenge(Request $request, MfaService $mfa)
     {
-        if (! $request->user()->mfa_confirmed_at) { return redirect()->route('mfa.setup'); }
+        if (! $request->user()->mfa_confirmed_at) { return redirect()->route(config('pranata.mfa_required') ? 'mfa.setup' : 'dashboard'); }
         if ($mfa->verified($request)) { return redirect()->route('dashboard'); }
 
         return view('auth.mfa-challenge');

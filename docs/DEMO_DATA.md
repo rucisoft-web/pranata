@@ -28,6 +28,6 @@ Penyebutan nama perusahaan bukan klaim bahwa mereka pelanggan, pengguna, sponsor
 - Route tamu seluruhnya GET/HEAD; tidak ada route mutasi demo.
 - ID risiko, audit, kewajiban dan lampiran tetap diperiksa terhadap perusahaan demo aktif.
 - Akun internal dan verifikasi MFA tidak berubah ketika pengguna berkunjung ke demo.
-- `DEMO_ENABLED=false` menonaktifkan seluruh route demo dan menyembunyikan tombol tamu.
+- `PRANATA_GUEST_LOGIN=false` (bawaan) menonaktifkan seluruh route demo dan menyembunyikan tombol tamu.
 
 Seeder idempoten, tidak menghapus data, dan menolak benturan dengan entitas/akun non-demo. Jangan menandai entitas produksi sebagai demo; flag ini adalah keputusan publikasi data, bukan label tampilan biasa.

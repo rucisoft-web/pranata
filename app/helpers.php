@@ -9,3 +9,16 @@ if (! function_exists('workspace_route')) {
         return route($name, $parameters);
     }
 }
+
+if (! function_exists('demo_available')) {
+    /** Akses tamu aktif dan data contoh sudah dimuat. */
+    function demo_available(): bool
+    {
+        if (! config('demo.enabled')) { return false; }
+        try {
+            return \App\Models\Entity::where('is_demo', true)->exists();
+        } catch (\Throwable) {
+            return false;
+        }
+    }
+}

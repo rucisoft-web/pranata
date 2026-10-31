@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -32,7 +33,23 @@ class AuthController extends Controller
         $request->session()->forget('entity_id');
         $request->session()->forget(['mfa', 'mfa_setup', 'mfa_recovery_plain']);
 
-        return redirect()->route($request->user()->mfa_confirmed_at ? 'mfa.challenge' : 'mfa.setup');
+        if ($request->user()->mfa_confirmed_at) { return redirect()->route('mfa.challenge'); }
+
+        return redirect()->route(config('pranata.mfa_required') ? 'mfa.setup' : 'dashboard');
+    }
+
+    public function changePassword(Request $request)
+    {
+        $data = $request->validate([
+            'current_password' => ['required', 'string', 'current_password'],
+            'password' => ['required', 'confirmed', 'different:current_password', Password::min(12)->letters()->mixedCase()->numbers()->symbols()],
+        ]);
+        $user = $request->user();
+        $user->forceFill(['password' => $data['password']])->save();
+        \App\Models\SecurityEvent::create(['user_id' => $user->id, 'action' => 'password.changed', 'metadata' => [], 'created_at' => now()]);
+        $request->session()->regenerate();
+
+        return redirect()->route('mfa.security')->with('success', 'Kata sandi berhasil diganti.');
     }
 
     public function destroy(Request $request)

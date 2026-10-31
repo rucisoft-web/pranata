@@ -25,7 +25,7 @@
 @else<p class="muted">Tidak ada tindakan tersedia untuk akun ini pada tahap sekarang.</p>
 @endif
 </section>
-<section class="panel detail-panel"><h2>Riwayat perubahan</h2><ol class="timeline">@foreach($events as $event)<li><strong>{{ $event->action }}</strong><small>{{ $event->created_at->format('d/m/Y H:i') }} UTC · Pengguna #{{ $event->actor_id }}</small></li>
+<section class="panel detail-panel"><h2>Riwayat perubahan</h2><ol class="timeline">@foreach($events as $event)<li><strong>{{ $event->label }}</strong><small>{{ $event->created_at->format('d/m/Y H:i') }} · {{ $event->actor?->name ?? 'Pengguna #'.$event->actor_id }}</small></li>
 @endforeach</ol></section>
 </aside></div>
 @endsection

@@ -21,5 +21,6 @@ class EntityContext
     public function canManageCompliance(): bool { return in_array($this->role, ['admin', 'compliance_officer'], true); }
     public function canContributeCompliance(): bool { return in_array($this->role, ['admin', 'compliance_officer', 'compliance_owner'], true); }
     public function canManageAudit(): bool { return in_array($this->role, ['admin', 'audit_manager'], true); }
+    public function canManageUsers(): bool { return $this->role === 'admin'; }
     public function canReadAudit(): bool { return in_array($this->role, ['admin', 'audit_manager', 'auditor', 'demo_viewer'], true); }
 }

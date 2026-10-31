@@ -12,5 +12,8 @@
         <env name="DB_DATABASE" value="pranata_test"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="BCRYPT_ROUNDS" value="4"/>
+        <env name="PRANATA_GUEST_LOGIN" value="true"/>
+        <env name="PRANATA_MFA_REQUIRED" value="true"/>
+        <env name="PRANATA_SEED_DEMO" value="false"/>
     </php>
 </phpunit>

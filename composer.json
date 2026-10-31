@@ -5,7 +5,7 @@
   "description": "PRANATA — Governance, Risk and Compliance untuk BUMN dan perusahaan terbuka",
   "license": "proprietary",
   "require": {
-    "php": "~8.3.0",
+    "php": "^8.3",
     "laravel/framework": "^13.17",
     "pragmarx/google2fa": "^9.0",
     "bacon/bacon-qr-code": "^3.0",

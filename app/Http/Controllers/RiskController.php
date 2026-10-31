@@ -43,7 +43,7 @@ class RiskController extends Controller
     public function show(int $risk, EntityContext $context)
     {
         $risk = $this->find($risk, $context);
-        $events = AuditEvent::where('entity_id', $context->entity->id)->where('subject_type', 'risk')->where('subject_id', $risk->id)->latest('id')->get();
+        $events = AuditEvent::with('actor')->where('entity_id', $context->entity->id)->where('subject_type', 'risk')->where('subject_id', $risk->id)->latest('id')->get();
 
         return view('risks.show', compact('risk', 'events', 'context'));
     }
