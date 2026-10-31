@@ -12,7 +12,7 @@ Ini adalah fondasi pengembangan, belum aplikasi GRC lengkap dan belum siap menyi
 
 ## Persyaratan
 
-- PHP 8.3 atau lebih baru dengan ekstensi Laravel serta `pdo_mysql`; CI menggunakan PHP 8.4.
+- PHP **8.3.x** dengan ekstensi Laravel, `pdo_mysql`, dan `xmlwriter`; CI menggunakan PHP 8.3.
 - Composer 2.
 - MySQL 8.x; CI menggunakan MySQL 8.4.
 - Database kosong dengan pengguna aplikasi khusus. Jangan memakai akun root untuk produksi.
@@ -72,7 +72,7 @@ php artisan test
 
 GitHub Actions menjalankan validasi Composer, lint PHP, kompilasi Blade, pemeriksaan route, dan feature tests terhadap MySQL. Tes memeriksa isolasi perusahaan, pencabutan akses, pembatasan peran, spoofing field, maker-checker, status terkunci, konflik revisi, validasi, escaping, dan autentikasi.
 
-`composer.lock` disertakan dari resolusi dependensi CI agar instalasi dapat direproduksi. Gunakan `composer install`; pembaruan dependensi harus ditinjau dan diuji sebelum rilis.
+`composer.lock` disusun ulang dan diuji pada PHP 8.3 agar instalasi dapat direproduksi. Composer menggunakan target platform 8.3.0 dan rentang PHP ~8.3.0 untuk mencegah dependensi khusus PHP 8.4. Gunakan `composer install`; pembaruan dependensi harus ditinjau dan diuji sebelum rilis.
 
 ## Deployment
 
@@ -98,3 +98,7 @@ Landing page menampilkan matriks ilustrasi SVG dan tangkapan layar aplikasi yang
 ## Sumber fondasi
 
 Entrypoint dan konfigurasi dasar diadaptasi dari `laravel/laravel` branch `13.x`. Laravel framework memakai lisensi MIT. Lihat [pemberitahuan pihak ketiga](THIRD_PARTY_NOTICES.md). Kode produk PRANATA belum diberikan lisensi distribusi publik.
+
+## Memastikan PHP 8.3 pada hosting
+
+Jalankan `php -v` dan `composer check-platform-reqs` memakai PHP CLI 8.3. Versi PHP situs dan terminal hosting dapat berbeda. Pada cPanel dengan EasyApache, executable PHP 8.3 sering berada di `/opt/cpanel/ea-php83/root/usr/bin/php`; pastikan path yang tersedia pada hosting sendiri. Jangan memakai `--ignore-platform-reqs` untuk instalasi.
