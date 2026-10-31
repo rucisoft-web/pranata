@@ -101,4 +101,4 @@ Entrypoint dan konfigurasi dasar diadaptasi dari `laravel/laravel` branch `13.x`
 
 ## Memastikan PHP 8.3 pada hosting
 
-Jalankan `php -v` dan `composer check-platform-reqs` memakai PHP CLI 8.3. Versi PHP situs dan terminal hosting dapat berbeda. Pada cPanel dengan EasyApache, executable PHP 8.3 sering berada di `/opt/cpanel/ea-php83/root/usr/bin/php`; pastikan path yang tersedia pada hosting sendiri. Jangan memakai `--ignore-platform-reqs` untuk instalasi.
+Jalankan `php -v` dan `composer check-platform-reqs` memakai PHP CLI 8.3. Versi PHP situs dan terminal hosting dapat berbeda. Pada cPanel dengan EasyApache, executable PHP 8.3 sering berada di `/opt/cpanel/ea-php83/root/usr/bin/php`; pastikan path yang tersedia pada hosting sendiri. Jangan memakai `--ignore-platform-reqs` untuk instalasi. Target platform Composer 8.3.0 menyatakan batas kompatibilitas dependensi, bukan rekomendasi menggunakan patch lama. Untuk deployment, gunakan patch keamanan PHP 8.3 terbaru dari penyedia hosting. Pada pemeriksaan 31 Oktober 2026, rilis keamanan resmi yang diverifikasi adalah PHP 8.3.36: https://www.php.net/releases/8_3_36.php .

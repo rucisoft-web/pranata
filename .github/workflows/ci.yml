@@ -39,7 +39,7 @@ jobs:
           cp .env.example .env
           mkdir -p artifacts
       - name: Install dependencies
-        run: composer update --no-interaction --prefer-dist --no-progress
+        run: composer install --no-interaction --prefer-dist --no-progress
       - name: Check actual PHP and extensions
         run: composer check-platform-reqs
       - name: Validate Composer manifest
