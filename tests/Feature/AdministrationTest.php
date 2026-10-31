@@ -163,7 +163,7 @@ class AdministrationTest extends TestCase
         $this->assertSame(36, Risk::count());
         $this->get('/login')->assertSee('Ingin melihat-lihat dulu?')->assertSee('/demo/ringkasan');
         $this->get('/')->assertSee('Masuk sebagai Tamu');
-        $this->get('/demo/ringkasan')->assertOk()->assertSee('Sebaran level risiko inheren')->assertSee('Tren pemenuhan kewajiban')->assertSee('<svg', false)->assertSee('Kepatuhan tepat waktu');
+        $this->get('/demo/ringkasan')->assertOk()->assertSee('Sebaran level risiko inheren')->assertSee('Tren pemenuhan kewajiban')->assertSee('<svg', false)->assertSee('Kepatuhan tepat waktu')->assertSee('css/pranata.css?v=', false);
 
         $this->signIn($this->admin)->get('/ringkasan')->assertOk()->assertSee('Register risiko belum berisi catatan.')->assertDontSee('DEMO');
         $owner = $this->member($this->entity, 'risk_owner');

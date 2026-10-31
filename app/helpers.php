@@ -10,6 +10,16 @@ if (! function_exists('workspace_route')) {
     }
 }
 
+if (! function_exists('asset_v')) {
+    /** URL aset publik dengan penanda versi agar browser memuat CSS/JS terbaru setelah pembaruan. */
+    function asset_v(string $path): string
+    {
+        $file = public_path($path);
+
+        return asset($path).(is_file($file) ? '?v='.filemtime($file) : '');
+    }
+}
+
 if (! function_exists('demo_available')) {
     /** Akses tamu aktif dan data contoh sudah dimuat. */
     function demo_available(): bool

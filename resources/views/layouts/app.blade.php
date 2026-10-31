@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Dashboard') — PRANATA</title>
-    <link rel="stylesheet" href="{{ asset('css/pranata.css') }}">
+    <link rel="stylesheet" href="{{ asset_v('css/pranata.css') }}">
 </head>
 <body>
 <div class="shell">

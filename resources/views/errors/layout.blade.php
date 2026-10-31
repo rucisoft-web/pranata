@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="id">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>@yield('title') — PRANATA</title><link rel="stylesheet" href="{{ asset('css/pranata.css') }}"></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>@yield('title') — PRANATA</title><link rel="stylesheet" href="{{ asset_v('css/pranata.css') }}"></head>
 <body class="login-page">
 <main class="login-card">
     <div class="eyebrow">PRANATA · {{ $code }}</div>

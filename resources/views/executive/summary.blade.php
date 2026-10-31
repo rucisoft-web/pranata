@@ -12,18 +12,18 @@
             @if($context->entity->is_listed)<span class="badge neutral">Perusahaan terbuka</span>@endif</p>
         <div class="exec-actions"><a class="button secondary small" href="#" data-print>Cetak / simpan PDF</a><a class="button secondary small" href="{{ workspace_route('dashboard') }}">Dashboard operasional</a></div>
     </div>
-    <svg class="exec-illustration" viewBox="0 0 320 180" role="img" aria-label="Ilustrasi tiga pilar tata kelola: risiko, kepatuhan, dan audit">
-        <rect x="0" y="0" width="320" height="180" rx="10" class="ill-bg"></rect>
-        <path d="M30 150 L290 150" class="ill-line"></path>
-        <polygon points="160,22 268,62 52,62" class="ill-roof"></polygon>
-        <rect x="70" y="68" width="22" height="78" rx="3" class="ill-pillar p1"></rect>
-        <rect x="149" y="68" width="22" height="78" rx="3" class="ill-pillar p2"></rect>
-        <rect x="228" y="68" width="22" height="78" rx="3" class="ill-pillar p3"></rect>
-        <rect x="58" y="146" width="204" height="8" rx="2" class="ill-base"></rect>
-        <text x="81" y="170" text-anchor="middle" class="ill-label">Risiko</text>
-        <text x="160" y="170" text-anchor="middle" class="ill-label">Kepatuhan</text>
-        <text x="239" y="170" text-anchor="middle" class="ill-label">Audit</text>
-        <text x="160" y="52" text-anchor="middle" class="ill-mark">{{ \Illuminate\Support\Str::of($context->entity->name)->replace(['PT ', '(Persero) ', ' Tbk', ' — DEMO'], '')->explode(' ')->take(2)->map(fn ($w) => mb_substr($w, 0, 1))->join('') }}</text>
+    <svg class="exec-illustration" viewBox="0 0 320 180" width="300" height="169" role="img" aria-label="Ilustrasi tiga pilar tata kelola: risiko, kepatuhan, dan audit">
+        <rect x="0" y="0" width="320" height="180" rx="10" fill="#f1f6f8" class="ill-bg"></rect>
+        <path d="M30 150 L290 150" stroke="#c9d6dc" stroke-width="2" class="ill-line"></path>
+        <polygon points="160,22 268,62 52,62" fill="#142c38" class="ill-roof"></polygon>
+        <rect x="70" y="68" width="22" height="78" rx="3" fill="#b4574a" class="ill-pillar p1"></rect>
+        <rect x="149" y="68" width="22" height="78" rx="3" fill="#245b5a" class="ill-pillar p2"></rect>
+        <rect x="228" y="68" width="22" height="78" rx="3" fill="#b69759" class="ill-pillar p3"></rect>
+        <rect x="58" y="146" width="204" height="8" rx="2" fill="#20353d" class="ill-base"></rect>
+        <text x="81" y="170" text-anchor="middle" fill="#506773" class="ill-label">Risiko</text>
+        <text x="160" y="170" text-anchor="middle" fill="#506773" class="ill-label">Kepatuhan</text>
+        <text x="239" y="170" text-anchor="middle" fill="#506773" class="ill-label">Audit</text>
+        <text x="160" y="52" text-anchor="middle" fill="#d7bd88" class="ill-mark">{{ \Illuminate\Support\Str::of($context->entity->name)->replace(['PT ', '(Persero) ', ' Tbk', ' — DEMO'], '')->explode(' ')->take(2)->map(fn ($w) => mb_substr($w, 0, 1))->join('') }}</text>
     </svg>
 </section>
 
@@ -145,5 +145,5 @@
 @endif
 
 <p class="muted small">Metodologi {{ config('grc.methodology_version') }}: skor inheren = kemungkinan × dampak (1–25). Kepatuhan tepat waktu = periode yang sudah jatuh tempo dan diverifikasi dipenuhi paling lambat pada tanggal tenggat. Data dihitung saat halaman dibuka.</p>
-<script src="{{ asset('js/print.js') }}"></script>
+<script src="{{ asset_v('js/print.js') }}"></script>
 @endsection
