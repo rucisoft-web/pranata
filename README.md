@@ -80,7 +80,7 @@ php artisan migrate
 php artisan db:seed --class=DemoSeeder
 ```
 
-Seeder membuat tiga perusahaan berlabel DEMO, 15 risiko, 9 kewajiban, 18 periode pemenuhan, 6 penugasan audit, 6 kertas kerja, 12 temuan, dan 24 bukti PDF sintetis. Seeder idempoten, tidak menghapus data, dan menolak benturan kode dengan entitas/akun non-demo. Tidak ada kredensial demo publik: akun sintetis tidak dapat login. Akses tamu `/demo` hanya membaca entitas `is_demo=true`, memakai guard request terpisah, dan tidak melewati MFA akun internal. Akses tamu aktif bila `PRANATA_GUEST_LOGIN=true` (nama lama `DEMO_ENABLED` masih dibaca) dan data contoh sudah dimuat.
+Seeder membuat tiga perusahaan berlabel DEMO, 36 risiko (semua level dan status, lengkap dengan riwayat), 24 kewajiban dengan 120 periode pemenuhan (8 bulan terakhir hingga bulan depan), 15 penugasan audit di lima tahap, 33 kertas kerja, 24 temuan, dan 140 bukti PDF sintetis. Seeder idempoten, tidak menghapus data, dan menolak benturan kode dengan entitas/akun non-demo. Tidak ada kredensial demo publik: akun sintetis tidak dapat login. Akses tamu `/demo` hanya membaca entitas `is_demo=true`, memakai guard request terpisah, dan tidak melewati MFA akun internal. Akses tamu aktif bila `PRANATA_GUEST_LOGIN=true` (nama lama `DEMO_ENABLED` masih dibaca) dan data contoh sudah dimuat.
 
 Perusahaan contoh: profil Kimia Farma, Medikaloka Hermina, dan Pakuwon Jati berdasarkan laporan tahunan 2025 yang diberikan. Semua catatan operasional adalah simulasi, bukan temuan atau penilaian aktual. Dokumen asli tidak didistribusikan dalam repository. Lihat [asal dan batas data demo](docs/DEMO_DATA.md).
 

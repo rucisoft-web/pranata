@@ -155,4 +155,18 @@ class AdministrationTest extends TestCase
         $risk = Risk::where('code', 'RSK-1')->firstOrFail();
         $this->get('/risks/'.$risk->id)->assertOk()->assertSee('Risiko dicatat sebagai draf')->assertSee($owner->name)->assertDontSee('risk.created')->assertDontSee('UTC');
     }
+
+    public function test_executive_summary_charts_for_management_roles_only(): void
+    {
+        Storage::fake('local');
+        $this->seed(\Database\Seeders\DemoSeeder::class);
+        $this->assertSame(36, Risk::count());
+        $this->get('/login')->assertSee('Ingin melihat-lihat dulu?')->assertSee('/demo/ringkasan');
+        $this->get('/')->assertSee('Masuk sebagai Tamu');
+        $this->get('/demo/ringkasan')->assertOk()->assertSee('Sebaran level risiko inheren')->assertSee('Tren pemenuhan kewajiban')->assertSee('<svg', false)->assertSee('Kepatuhan tepat waktu');
+
+        $this->signIn($this->admin)->get('/ringkasan')->assertOk()->assertSee('Register risiko belum berisi catatan.')->assertDontSee('DEMO');
+        $owner = $this->member($this->entity, 'risk_owner');
+        $this->signIn($owner)->get('/ringkasan')->assertForbidden();
+    }
 }

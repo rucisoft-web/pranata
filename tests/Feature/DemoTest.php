@@ -26,6 +26,7 @@ class DemoTest extends TestCase
         $this->assertSame(3, Entity::where('is_demo', true)->count());
         foreach (Entity::where('is_demo', true)->get() as $entity) {
             $this->get('/demo?entity='.$entity->id)->assertOk()->assertSee($entity->name)->assertSee('DATA CONTOH');
+            $this->get('/demo/ringkasan?entity='.$entity->id)->assertOk()->assertSee('Ringkasan eksekutif')->assertSee($entity->name)->assertSee('Perbandingan perusahaan dalam grup');
             foreach (['risks', 'obligations', 'compliance', 'audits', 'audit-actions'] as $path) { $this->get('/demo/'.$path)->assertOk(); }
             $risk = Risk::where('entity_id', $entity->id)->firstOrFail();
             $this->get('/demo/risks/'.$risk->id)->assertOk()->assertSee($risk->title)->assertDontSee('Ajukan tinjauan');

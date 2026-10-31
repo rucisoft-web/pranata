@@ -14,6 +14,8 @@
         <div class="nav-label">RUANG KERJA</div>
         <nav aria-label="Menu utama">
             <a class="{{ request()->routeIs('dashboard', 'demo.dashboard') ? 'active' : '' }}" href="{{ workspace_route('dashboard') }}">Dashboard eksekutif</a>
+            @if($context->canReadExecutive())<a class="{{ request()->routeIs('summary', 'demo.summary') ? 'active' : '' }}" href="{{ workspace_route('summary') }}">Ringkasan eksekutif</a>
+@endif
             <a class="{{ request()->routeIs('risks.*', 'demo.risks.*') ? 'active' : '' }}" href="{{ workspace_route('risks.index') }}">Manajemen risiko</a>
             <a class="{{ request()->routeIs('obligations.*', 'demo.obligations.*') ? 'active' : '' }}" href="{{ workspace_route('obligations.index') }}">Register kewajiban</a>
             <a class="{{ request()->routeIs('compliance.*', 'demo.compliance.*') ? 'active' : '' }}" href="{{ workspace_route('compliance.index') }}">Kalender kepatuhan</a>
@@ -29,7 +31,7 @@
     <div class="workspace">
         <header class="topbar">
             @if(request()->attributes->get('demo_mode'))
-            <form action="{{ route('demo.dashboard') }}" method="get" class="entity-switch"><label for="demo_entity">Perusahaan contoh</label><select id="demo_entity" name="entity">@foreach(\App\Models\Entity::where('is_demo', true)->orderBy('name')->get() as $company)<option value="{{ $company->id }}" @selected($company->id === $context->entity->id)>{{ $company->name }}</option>
+            <form action="{{ route(request()->routeIs('demo.summary') ? 'demo.summary' : 'demo.dashboard') }}" method="get" class="entity-switch"><label for="demo_entity">Perusahaan contoh</label><select id="demo_entity" name="entity">@foreach(\App\Models\Entity::where('is_demo', true)->orderBy('name')->get() as $company)<option value="{{ $company->id }}" @selected($company->id === $context->entity->id)>{{ $company->name }}</option>
 @endforeach</select><button class="button secondary small">Buka</button></form><div class="user-menu"><span class="badge demo-badge">Tamu · Hanya baca</span><a href="{{ route('login') }}">Masuk akun</a></div>
 
 @else

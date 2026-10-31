@@ -12,12 +12,14 @@ use App\Http\Controllers\ComplianceController;
 use App\Http\Controllers\AuditController;
 use App\Http\Controllers\AuditFindingController;
 use App\Http\Controllers\EvidenceController;
+use App\Http\Controllers\ExecutiveSummaryController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'landing')->name('home');
 Route::prefix('demo')->name('demo.')->middleware(\App\Http\Middleware\DemoAccess::class)->group(function () {
     Route::get('/', DashboardController::class)->name('dashboard');
+    Route::get('/ringkasan', ExecutiveSummaryController::class)->name('summary');
     Route::get('/risks', [RiskController::class, 'index'])->name('risks.index');
     Route::get('/risks/{risk}', [RiskController::class, 'show'])->whereNumber('risk')->name('risks.show');
     Route::get('/obligations', [ObligationController::class, 'index'])->name('obligations.index');
@@ -49,6 +51,7 @@ Route::middleware('auth')->group(function () {
     });
     Route::middleware([RequireMfa::class, ResolveEntity::class])->group(function () {
         Route::get('/dashboard', DashboardController::class)->name('dashboard');
+        Route::get('/ringkasan', ExecutiveSummaryController::class)->name('summary');
         Route::resource('risks', RiskController::class)->except('destroy')->where(['risk' => '[0-9]+']);
         Route::post('/risks/{risk}/{operation}', [RiskController::class, 'transition'])
             ->where(['risk' => '[0-9]+', 'operation' => 'submit|approve|return'])->name('risks.transition');

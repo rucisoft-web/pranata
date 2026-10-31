@@ -147,7 +147,8 @@ Bila `php` di cron bukan versi 8.3 atau lebih baru, ganti `php` dengan path leng
 2. Saat login pertama, pindai QR dengan aplikasi authenticator (Google Authenticator, Microsoft Authenticator, dsb.), masukkan kata sandi dan kode 6 digit, lalu **simpan sepuluh kode pemulihan** di tempat aman.
 3. **Pengguna & akses** › *Tambah pengguna*: isi nama, email, peran, dan kata sandi sementara. Sampaikan kata sandi secara langsung; pengguna menggantinya di menu **Keamanan**.
 4. Untuk anak perusahaan/entitas grup: **Pengguna & akses** › *Tambah perusahaan*. Pindah perusahaan lewat kotak **Perusahaan** di bagian atas.
-5. Alur kerja: **Manajemen risiko** (catat › ajukan › ditinjau orang lain), **Register kewajiban** (sumber › kewajiban › periode), **Kalender kepatuhan** (PIC unggah bukti › ajukan › petugas kepatuhan verifikasi), **Audit internal** (rencana › lapangan › kertas kerja › temuan › final › tindak lanjut PIC › tutup).
+5. **Ringkasan eksekutif**: satu halaman untuk Direksi/Dewan Komisaris berisi angka kunci, narasi otomatis, grafik level risiko, risiko per kategori, risiko utama, tren pemenuhan kewajiban, status audit, temuan per tingkat risiko, dan perbandingan antarperusahaan grup. Tombol *Cetak / simpan PDF* menghasilkan versi cetak.
+6. Alur kerja: **Manajemen risiko** (catat › ajukan › ditinjau orang lain), **Register kewajiban** (sumber › kewajiban › periode), **Kalender kepatuhan** (PIC unggah bukti › ajukan › petugas kepatuhan verifikasi), **Audit internal** (rencana › lapangan › kertas kerja › temuan › final › tindak lanjut PIC › tutup).
 
 | Peran | Hak utama |
 |---|---|
@@ -170,9 +171,11 @@ PRANATA_SEED_DEMO=true
 PRANATA_GUEST_LOGIN=true
 ```
 
-lalu jalankan berurutan `php artisan optimize:clear`, `php artisan db:seed --force`, dan `php artisan optimize` (Terminal atau cron sekali jalan seperti bagian 6). Data contoh berisi tiga perusahaan berlabel DEMO (profil farmasi, rumah sakit, dan properti dari laporan tahunan 2025) lengkap dengan 15 risiko, 9 kewajiban, 18 periode pemenuhan, 6 penugasan audit, 12 temuan, dan 24 bukti PDF sintetis. Semua catatan operasionalnya simulasi, bukan temuan atau penilaian aktual, dan peringatan ini tampil di setiap halaman.
+lalu jalankan berurutan `php artisan optimize:clear`, `php artisan db:seed --force`, dan `php artisan optimize` (Terminal atau cron sekali jalan seperti bagian 6). Data contoh berisi tiga perusahaan berlabel DEMO (profil farmasi, rumah sakit, dan properti dari laporan tahunan 2025) lengkap dengan 36 risiko, 24 kewajiban dengan 120 periode pemenuhan, 15 penugasan audit di semua tahap, 24 temuan, dan 140 bukti PDF sintetis. Semua catatan operasionalnya simulasi, bukan temuan atau penilaian aktual, dan peringatan ini tampil di setiap halaman.
 
-Halaman depan lalu menampilkan tombol **Lihat demo sebagai tamu**, dan halaman login menampilkan **Masuk sebagai Tamu · Lihat Data Contoh**. Pengunjung masuk tanpa kata sandi ke `/demo`, bisa berganti di antara tiga perusahaan contoh, membuka semua modul, dan mengunduh bukti contoh. Akses tamu hanya membaca data berlabel DEMO: tidak ada tombol simpan, dan data perusahaan sungguhan tidak pernah terlihat. Untuk mematikan, ubah menjadi `PRANATA_GUEST_LOGIN=false` lalu `php artisan optimize`.
+Halaman depan lalu menampilkan tombol **Masuk sebagai Tamu** di kanan atas (dan **Lihat demo sebagai tamu** di bagian utama), sedangkan halaman login menampilkan kotak **Ingin melihat-lihat dulu? › Masuk sebagai Tamu**. Pengunjung masuk tanpa kata sandi langsung ke **Ringkasan eksekutif** perusahaan contoh, bisa berganti di antara tiga perusahaan contoh, membuka semua modul, dan mengunduh bukti contoh. Akses tamu hanya membaca data berlabel DEMO: tidak ada tombol simpan, dan data perusahaan sungguhan tidak pernah terlihat. Untuk mematikan, ubah menjadi `PRANATA_GUEST_LOGIN=false` lalu `php artisan optimize`.
+
+Bila data contoh versi lama (kode `…-SIM-…`) pernah dimuat, data baru ditambahkan di sampingnya. Untuk tampilan paling rapi, kosongkan database lalu jalankan ulang bagian 6 dengan `PRANATA_SEED_DEMO=true`.
 
 Data contoh dan data sungguhan boleh berada di instalasi yang sama, tetapi untuk produksi lebih rapi memakai instalasi terpisah.
 

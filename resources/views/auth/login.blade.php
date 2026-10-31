@@ -7,6 +7,8 @@
     <h1>PRANATA<span class="gold">.</span></h1>
     <p class="login-tagline">Tata Kelola Terarah.<br>Risiko Terkendali.</p>
     <hr>
+    @if(demo_available())<div class="guest-box"><strong>Ingin melihat-lihat dulu?</strong><span>Jelajahi tiga perusahaan contoh tanpa akun dan tanpa kata sandi. Hanya baca.</span><a class="button full" href="{{ route('demo.summary') }}">Masuk sebagai Tamu</a></div>
+@endif
     <h2>Masuk ke ruang kerja</h2>
     <p class="muted">Gunakan akun yang telah diberikan akses perusahaan.</p>
     @if($errors->any())<div class="notice error" role="alert">{{ $errors->first() }}</div>
@@ -17,8 +19,7 @@
         <label for="password">Kata sandi</label><input id="password" type="password" name="password" required autocomplete="current-password" maxlength="1024">
         <button class="button full" type="submit">Masuk ke PRANATA</button>
     </form>
-    @if(demo_available())<a class="button secondary full" href="{{ route('demo.dashboard') }}">Masuk sebagai Tamu · Lihat Data Contoh</a>
-@endif
+
     <p class="muted small">Hubungi administrator perusahaan untuk memperoleh akses.</p>
 </main>
 </body></html>
