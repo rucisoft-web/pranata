@@ -12,6 +12,9 @@ use App\Models\GovernanceAssessment;
 use App\Models\GovernanceItem;
 use App\Models\Obligation;
 use App\Models\ObligationOccurrence;
+use App\Models\QuestionnaireAssignment;
+use App\Models\QuestionnaireCampaign;
+use App\Models\QuestionnaireResponse;
 use App\Models\RegulatorySource;
 use App\Models\Risk;
 use App\Models\User;
@@ -29,6 +32,9 @@ class DemoSeeder extends Seeder
         'pic' => ['compliance_owner', 'Sari Melati'], 'pic-2' => ['compliance_owner', 'Agus Firmansyah'],
         'auditor' => ['auditor', 'Yusuf Hakim'], 'auditor-2' => ['auditor', 'Maya Anggraini'],
         'audit-reviewer' => ['audit_manager', 'Indra Kusuma'],
+        'komut' => ['board_member', 'Ratna Hadiwijaya'], 'komisaris' => ['board_member', 'Bambang Sutrisno'],
+        'komisaris-ind' => ['board_member', 'Lestari Wulandari'], 'dirut' => ['board_member', 'Arif Nugroho'],
+        'dirkeu' => ['board_member', 'Fitri Handayani'],
     ];
 
     /** Kewajiban contoh: [judul, frekuensi, tingkat kritis, PIC, sumber]. */
@@ -76,6 +82,7 @@ class DemoSeeder extends Seeder
                 $this->compliance($entity, $code, $sector, $people);
                 $this->audits($entity, $code, $sector, $people);
                 $this->governance($entity, $code, $people);
+                $this->questionnaires($entity, $code, $people);
             }
         });
     }
@@ -414,6 +421,64 @@ class DemoSeeder extends Seeder
                     }
                 }
             }
+        }
+    }
+
+    /** Kuesioner contoh: [templat, tahun relatif, status, responden, jumlah yang mengisi, pengecualian D&O/kode etik]. */
+    private function questionnaires(Entity $entity, string $code, array $people): void
+    {
+        $board = ['komut', 'komisaris', 'komisaris-ind', 'dirut', 'dirkeu'];
+        $staff = ['pic', 'pic-2', 'owner', 'owner-2', 'auditor', 'risk-reviewer'];
+        $year = (int) now()->format('Y');
+        $plan = [
+            ['board_eval', -1, 'closed', $board, 5], ['board_eval', 0, 'closed', $board, 5],
+            ['director_eval', -1, 'closed', $board, 5], ['director_eval', 0, 'open', $board, 3],
+            ['committee_eval', 0, 'closed', ['komisaris-ind', 'komisaris', 'audit-reviewer', 'risk-reviewer'], 4],
+            ['dno', 0, 'open', $board, 4], ['coc', -1, 'closed', $staff, 6], ['coc', 0, 'open', $staff, 2],
+        ];
+        $notes = [
+            'ns1' => 'Memiliki 125.000 saham Perseroan (0,002%) secara langsung, telah dilaporkan kepada OJK.',
+            'nr1' => 'Komisaris pada satu anak perusahaan dan anggota komite pada asosiasi industri; masih dalam batas ketentuan.',
+            'na1' => 'Saudara kandung bekerja sebagai manajer di anak perusahaan, tidak dalam garis pelaporan langsung.',
+            'nb1' => 'Pihak terafiliasi menjadi pemasok jasa kebersihan dengan nilai kontrak di bawah ambang transaksi material; telah diungkapkan kepada Komite Audit.',
+            'cg1' => 'Menerima bingkisan hari raya dari vendor senilai di bawah batas wajar; dilaporkan susulan kepada fungsi kepatuhan.',
+        ];
+        foreach ($plan as $i => [$template, $offset, $status, $respondents, $filled]) {
+            $definition = config('questionnaires.templates')[$template];
+            $campaignYear = $year + $offset;
+            $campaign = QuestionnaireCampaign::firstOrNew(['entity_id' => $entity->id, 'template' => $template, 'year' => $campaignYear]);
+            if ($campaign->exists) { continue; }
+            $due = $offset < 0 ? now()->setDate($campaignYear, 12, 15) : ($status === 'open' ? today()->addDays(10 + $i) : today()->subDays(20));
+            $campaign->fill(['title' => $definition['title'], 'due_date' => $due, 'status' => $status, 'anonymous' => $definition['anonymous'],
+                'instructions' => 'Mohon isi sesuai kondisi tahun buku '.$campaignYear.'. Data simulasi untuk demonstrasi.', 'created_by' => $people['compliance']->id,
+                'closed_by' => $status === 'closed' ? $people['compliance']->id : null, 'closed_at' => $status === 'closed' ? $due->copy()->addDays(3) : null])->save();
+            $this->event($entity, 'questionnaire_campaigns', $campaign->id, 'questionnaire.opened', $people['compliance'], $due->copy()->subDays(21));
+            foreach ($respondents as $n => $person) {
+                $done = $n < $filled;
+                $assignment = QuestionnaireAssignment::create(['entity_id' => $entity->id, 'questionnaire_campaign_id' => $campaign->id, 'user_id' => $people[$person]->id,
+                    'status' => $done ? 'submitted' : 'pending', 'submitted_at' => $done ? $due->copy()->subDays(5)->startOfDay() : null]);
+                if (! $done) { continue; }
+                $answers = []; $exceptions = 0;
+                foreach ($campaign->questions() as $key => [, $type, , $flag]) {
+                    $seed = crc32($code.$template.$campaignYear.$key.$n);
+                    if ($type === 'scale') {
+                        // Tahun berjalan sedikit lebih baik; rapat dan komite lebih rendah agar ada area perbaikan.
+                        $base = (str_starts_with($key, 'bm') || str_starts_with($key, 'do')) ? 3 : 4;
+                        $answers[$key] = ['value' => max(2, min(5, $base + ($seed % 3) - 1 + ($offset === 0 && $seed % 4 === 0 ? 1 : 0)))];
+                    } elseif ($type === 'yesno') {
+                        $exception = isset($notes[$key]) && ($seed % 11 === 0 || ($key === 'ns1' && $n === 1) || ($key === 'nr1' && $n === 3) || ($key === 'cg1' && $n === 2 && $offset < 0));
+                        $value = $exception ? $flag : ($flag === 'yes' ? 'no' : 'yes');
+                        $answers[$key] = ['value' => $value] + ($exception ? ['note' => $notes[$key]] : []);
+                        if ($exception) { $exceptions++; }
+                    } else {
+                        $texts = ['Bahan rapat perlu diterima lebih awal, paling lambat lima hari kerja sebelum rapat.', 'Perlu sesi khusus pembahasan risiko teknologi dan keamanan siber.', 'Tindak lanjut keputusan rapat sebaiknya dipantau dalam satu daftar yang dapat diakses semua anggota.', 'Program orientasi anggota baru perlu diperkuat.', ''];
+                        $answers[$key] = ['value' => $texts[$seed % count($texts)]];
+                    }
+                }
+                QuestionnaireResponse::create(['entity_id' => $entity->id, 'questionnaire_campaign_id' => $campaign->id,
+                    'questionnaire_assignment_id' => $definition['anonymous'] ? null : $assignment->id, 'answers' => $answers, 'exceptions' => $exceptions]);
+            }
+            if ($status === 'closed') { $this->event($entity, 'questionnaire_campaigns', $campaign->id, 'questionnaire.closed', $people['compliance'], $campaign->closed_at); }
         }
     }
 

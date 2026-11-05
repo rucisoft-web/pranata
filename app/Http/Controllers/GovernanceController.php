@@ -82,8 +82,10 @@ class GovernanceController extends Controller
             && (! ($filters['pic'] ?? null) || ($filters['pic'] === 'none' ? $i->pic_id === null : $i->pic_id === (int) $filters['pic'])));
         $actions = $items->flatMap->actions;
         $members = $this->members($context);
+        $questionnaireCodes = \App\Models\QuestionnaireCampaign::where('entity_id', $context->entity->id)->where('status', 'closed')->where('year', $assessment->year)->pluck('template')
+            ->flatMap(fn ($t) => config('questionnaires.templates')[$t]['governance'] ?? [])->unique()->all();
 
-        return view('governance.show', compact('context', 'assessment', 'items', 'visible', 'summary', 'previous', 'previousItems', 'previousSummary', 'evidenceCounts', 'actions', 'members'));
+        return view('governance.show', compact('questionnaireCodes', 'context', 'assessment', 'items', 'visible', 'summary', 'previous', 'previousItems', 'previousSummary', 'evidenceCounts', 'actions', 'members'));
     }
 
     public function assign(Request $request, int $assessment, EntityContext $context, ChangeLog $log)
@@ -143,8 +145,9 @@ class GovernanceController extends Controller
             ->orderByDesc('created_at')->orderByDesc('id')->limit(30)->get();
         $members = $this->members($context);
         $canEdit = $this->canEdit($item, $request->user(), $context);
+        $questionnaires = $item->questionnaires();
 
-        return view('governance.item', compact('context', 'item', 'evidence', 'previous', 'history', 'members', 'canEdit'));
+        return view('governance.item', compact('context', 'item', 'evidence', 'previous', 'history', 'members', 'canEdit', 'questionnaires'));
     }
 
     public function update(Request $request, int $item, EntityContext $context, ChangeLog $log)
@@ -277,7 +280,8 @@ class GovernanceController extends Controller
         if ($item->status === 'not_assessed') { $errors[] = 'Pilih status penerapan.'; }
         if (in_array($item->status, ['applied', 'partial'], true) && mb_strlen(trim((string) $item->implementation)) < 20) { $errors[] = 'Uraikan penerapan minimal 20 karakter.'; }
         if (in_array($item->status, ['applied', 'partial'], true) && blank($item->evidence_note)
-            && ! EvidenceFile::where('entity_id', $context->entity->id)->where('subject_type', 'governance')->where('subject_id', $item->id)->exists()) {
+            && ! EvidenceFile::where('entity_id', $context->entity->id)->where('subject_type', 'governance')->where('subject_id', $item->id)->exists()
+            && $item->questionnaires()->isEmpty()) {
             $errors[] = 'Lampirkan berkas bukti atau isi referensi bukti.';
         }
         if ($item->needsExplanation() && mb_strlen(trim((string) $item->explanation)) < 20) { $errors[] = 'Jelaskan alasan belum diterapkan minimal 20 karakter (prinsip terapkan atau jelaskan).'; }

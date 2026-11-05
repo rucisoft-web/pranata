@@ -85,6 +85,15 @@ Modul **Governance** mengelola penerapan 25 rekomendasi Pedoman Tata Kelola Peru
 
 Pengelola: Administrator dan Petugas kepatuhan. PIC: semua peran kecuali Auditor dan Pembaca.
 
+### Kuesioner & evaluasi
+
+Menu **Kuesioner & evaluasi** menyediakan lima templat: self assessment Dewan Komisaris, self assessment Direksi, evaluasi Komite Audit, kuesioner Direksi dan Dewan Komisaris (D&O: afiliasi, kepemilikan saham, rangkap jabatan, independensi, integritas), dan pernyataan kepatuhan Kode Etik dan gratifikasi.
+
+- Pengelola memilih responden dan tenggat. Peran baru **Direksi / Dewan Komisaris** (`board_member`) untuk anggota organ yang mengisi kuesioner dan membaca Ringkasan eksekutif.
+- Evaluasi bersifat anonim: jawaban disimpan tanpa penugasan, waktu, maupun ID berurutan, dan hasil baru tampil setelah minimal 3 tanggapan. D&O dan kode etik bernama: jawaban pengecualian wajib dijelaskan dan tampil beserta nama responden.
+- Hasil: rata-rata per bagian dan per pertanyaan, sebaran skor, perbandingan tahun sebelumnya, isian bebas (diacak), ekspor CSV dan cetak/PDF.
+- Kuesioner yang ditutup otomatis menjadi bukti rekomendasi Governance tahun buku yang sama (4.1, 4.2, 6.1, 6.2, 7.1, 7.2, dan lainnya), sehingga rekomendasi itu dapat diajukan tanpa unggah berkas terpisah.
+
 ## Modul lanjutan dan demo
 
 Lihat [panduan modul](docs/MODULES.md) untuk alur kepatuhan, audit, MFA dan pengaturan peran.
@@ -94,7 +103,7 @@ php artisan migrate
 php artisan db:seed --class=DemoSeeder
 ```
 
-Seeder membuat tiga perusahaan berlabel DEMO, 36 risiko (semua level dan status, lengkap dengan riwayat), 24 kewajiban dengan 120 periode pemenuhan (8 bulan terakhir hingga bulan depan), 15 penugasan audit di lima tahap, 33 kertas kerja, 24 temuan, 6 penilaian Pedoman Tata Kelola (tahun lalu disetujui, tahun berjalan dalam penyusunan) dengan 150 rekomendasi dan 18 tindak lanjut, serta 218 bukti PDF sintetis. Seeder idempoten, tidak menghapus data, dan menolak benturan kode dengan entitas/akun non-demo. Tidak ada kredensial demo publik: akun sintetis tidak dapat login. Akses tamu `/demo` hanya membaca entitas `is_demo=true`, memakai guard request terpisah, dan tidak melewati MFA akun internal. Akses tamu aktif bila `PRANATA_GUEST_LOGIN=true` (nama lama `DEMO_ENABLED` masih dibaca) dan data contoh sudah dimuat.
+Seeder membuat tiga perusahaan berlabel DEMO, 36 risiko (semua level dan status, lengkap dengan riwayat), 24 kewajiban dengan 120 periode pemenuhan (8 bulan terakhir hingga bulan depan), 15 penugasan audit di lima tahap, 33 kertas kerja, 24 temuan, 6 penilaian Pedoman Tata Kelola (tahun lalu disetujui, tahun berjalan dalam penyusunan) dengan 150 rekomendasi dan 18 tindak lanjut, serta 218 bukti PDF sintetis, dan 24 kuesioner (5 templat, 102 tanggapan) dengan 5 anggota Direksi/Dewan Komisaris simulasi per perusahaan. Seeder idempoten, tidak menghapus data, dan menolak benturan kode dengan entitas/akun non-demo. Tidak ada kredensial demo publik: akun sintetis tidak dapat login. Akses tamu `/demo` hanya membaca entitas `is_demo=true`, memakai guard request terpisah, dan tidak melewati MFA akun internal. Akses tamu aktif bila `PRANATA_GUEST_LOGIN=true` (nama lama `DEMO_ENABLED` masih dibaca) dan data contoh sudah dimuat.
 
 Perusahaan contoh: profil Kimia Farma, Medikaloka Hermina, dan Pakuwon Jati berdasarkan laporan tahunan 2025 yang diberikan. Semua catatan operasional adalah simulasi, bukan temuan atau penilaian aktual. Dokumen asli tidak didistribusikan dalam repository. Lihat [asal dan batas data demo](docs/DEMO_DATA.md).
 

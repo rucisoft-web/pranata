@@ -36,6 +36,7 @@ class AuditEvent extends Model
         'governance.item_submit' => 'Penilaian diajukan untuk verifikasi', 'governance.item_verify' => 'Penilaian diverifikasi',
         'governance.item_return' => 'Penilaian dikembalikan', 'governance.assessment_approve' => 'Penilaian disetujui untuk pengungkapan',
         'governance.action_created' => 'Tindak lanjut ditambahkan', 'governance.action_done' => 'Tindak lanjut diselesaikan',
+        'questionnaire.opened' => 'Kuesioner dibuka', 'questionnaire.submitted' => 'Jawaban kuesioner dikirim', 'questionnaire.closed' => 'Kuesioner ditutup',
     ];
 
     public function actor() { return $this->belongsTo(User::class, 'actor_id'); }

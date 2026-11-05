@@ -20,6 +20,7 @@
             <a class="{{ request()->routeIs('obligations.*', 'demo.obligations.*') ? 'active' : '' }}" href="{{ workspace_route('obligations.index') }}">Register kewajiban</a>
             <a class="{{ request()->routeIs('compliance.*', 'demo.compliance.*') ? 'active' : '' }}" href="{{ workspace_route('compliance.index') }}">Kalender kepatuhan</a>
             <a class="{{ request()->routeIs('governance.*', 'demo.governance.*') ? 'active' : '' }}" href="{{ workspace_route('governance.index') }}">Governance</a>
+            <a class="{{ request()->routeIs('questionnaires.*', 'demo.questionnaires.*') ? 'active' : '' }}" href="{{ workspace_route('questionnaires.index') }}">Kuesioner & evaluasi</a>
             @if($context->canReadAudit())<a class="{{ request()->routeIs('audits.*', 'demo.audits.*') ? 'active' : '' }}" href="{{ workspace_route('audits.index') }}">Audit internal</a>
 @endif
             <a class="{{ request()->routeIs('findings.*', 'demo.findings.*') ? 'active' : '' }}" href="{{ workspace_route('findings.index') }}">Tindak lanjut saya</a>

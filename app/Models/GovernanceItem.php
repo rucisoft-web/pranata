@@ -17,6 +17,14 @@ class GovernanceItem extends Model
     public function principle(): int { return $this->definition()[0]; }
     public function aspect(): int { return config('governance.principles')[$this->principle()][0]; }
     public function text(): string { return $this->definition()[1]; }
+    /** Kuesioner tertutup pada tahun buku yang sama yang menjadi bukti rekomendasi ini. */
+    public function questionnaires()
+    {
+        $templates = collect(config('questionnaires.templates'))->filter(fn ($t) => in_array($this->code, $t['governance'], true))->keys();
+
+        return QuestionnaireCampaign::where('entity_id', $this->entity_id)->where('status', 'closed')->whereIn('template', $templates)
+            ->where('year', $this->assessment->year)->orderBy('id')->get();
+    }
     public function editable(): bool { return in_array($this->review_status, ['draft', 'returned'], true); }
     public function needsExplanation(): bool { return in_array($this->status, ['partial', 'not_applied'], true); }
 }

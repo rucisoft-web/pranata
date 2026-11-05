@@ -59,3 +59,13 @@ th{background:#fafbfc;color:#4a606c;font-size:12px;letter-spacing:.3px}th,td{pad
 @media(max-width:1100px){.gv-steps{grid-template-columns:1fr 1fr}.gv-steps div{border-bottom:1px solid var(--line)}}
 @media(max-width:750px){.gv-steps{grid-template-columns:1fr}.gv-assign{flex-direction:column;align-items:flex-start}}
 @media print{.gv-noprint{display:none!important}.gv-sheet{border:0;padding:0}.gv-disclosure{font-size:11px}.gv-draft{border:1px solid #b4574a}}
+.q-templates{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;margin-top:14px}.q-templates article{margin:0;display:flex;flex-direction:column}.q-templates h3{margin:6px 0 8px}.q-templates .button{margin-top:auto;align-self:flex-start}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.q-respondents{border:1px solid var(--line);border-radius:4px;padding:8px 16px 14px;margin:16px 0;max-height:360px;overflow:auto}.q-respondents label.check{display:flex;gap:8px;align-items:baseline;margin:8px 0}
+.q-preview{padding-left:18px;margin:6px 0 14px}.q-preview li{margin-bottom:6px}
+.q-question{border:0;border-bottom:1px solid #edf1f3;padding:14px 0 18px;margin:0}.q-question legend{font-weight:600;padding:0;margin-bottom:12px;line-height:1.5}
+.q-scale{display:flex;gap:8px;flex-wrap:wrap}.q-scale label{display:flex;flex-direction:column;align-items:center;gap:2px;border:1px solid #c9d6dc;border-radius:4px;padding:8px 12px;min-width:86px;cursor:pointer;margin:0}.q-scale label:has(input:checked){border-color:var(--teal);background:#eef5f4}.q-scale input{margin:0}.q-scale span{font-weight:700;font-size:16px}.q-scale small{font-size:12px;color:var(--muted)}.q-yesno label{flex-direction:row;gap:8px;min-width:100px}
+.q-prev{fill:#20353d;background:#20353d}
+.q-dist{display:flex;gap:4px}.q-dist span{display:flex;flex-direction:column;align-items:center;min-width:34px;padding:3px 4px;border-radius:3px;font-size:11px;color:var(--muted);background:#f4f7f8}.q-dist b{font-size:14px;color:var(--ink)}.q-dist .q-d4,.q-dist .q-d5{background:#edf5f0}.q-dist .q-d1,.q-dist .q-d2{background:#fbf0ec}
+.q-text{margin:0 0 6px;font-style:italic}.nowrap{white-space:nowrap}
+@media(max-width:750px){.form-grid{grid-template-columns:1fr}.q-scale label{min-width:60px}}
+.q-chart{max-width:760px}.metric strong.q-codes{font-size:22px;line-height:1.4}

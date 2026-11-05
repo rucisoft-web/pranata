@@ -14,6 +14,7 @@ use App\Http\Controllers\AuditFindingController;
 use App\Http\Controllers\EvidenceController;
 use App\Http\Controllers\ExecutiveSummaryController;
 use App\Http\Controllers\GovernanceController;
+use App\Http\Controllers\QuestionnaireController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -37,6 +38,9 @@ Route::prefix('demo')->name('demo.')->middleware(\App\Http\Middleware\DemoAccess
     Route::get('/governance/{assessment}/disclosure', [GovernanceController::class, 'disclosure'])->whereNumber('assessment')->name('governance.disclosure');
     Route::get('/governance/{assessment}/export', [GovernanceController::class, 'export'])->whereNumber('assessment')->name('governance.export');
     Route::get('/governance/items/{item}', [GovernanceController::class, 'item'])->whereNumber('item')->name('governance.items.show');
+    Route::get('/questionnaires', [QuestionnaireController::class, 'index'])->name('questionnaires.index');
+    Route::get('/questionnaires/{campaign}', [QuestionnaireController::class, 'show'])->whereNumber('campaign')->name('questionnaires.show');
+    Route::get('/questionnaires/{campaign}/export', [QuestionnaireController::class, 'export'])->whereNumber('campaign')->name('questionnaires.export');
 });
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'create'])->name('login');
@@ -86,6 +90,14 @@ Route::middleware('auth')->group(function () {
         Route::post('/governance/items/{item}/actions', [GovernanceController::class, 'action'])->whereNumber('item')->name('governance.items.action');
         Route::post('/governance/items/{item}/{operation}', [GovernanceController::class, 'transition'])->where(['item' => '[0-9]+', 'operation' => 'submit|verify|return'])->name('governance.items.transition');
         Route::post('/governance/actions/{action}/done', [GovernanceController::class, 'complete'])->whereNumber('action')->name('governance.actions.done');
+        Route::get('/questionnaires', [QuestionnaireController::class, 'index'])->name('questionnaires.index');
+        Route::get('/questionnaires/create', [QuestionnaireController::class, 'create'])->name('questionnaires.create');
+        Route::post('/questionnaires', [QuestionnaireController::class, 'store'])->name('questionnaires.store');
+        Route::get('/questionnaires/{campaign}', [QuestionnaireController::class, 'show'])->whereNumber('campaign')->name('questionnaires.show');
+        Route::get('/questionnaires/{campaign}/respond', [QuestionnaireController::class, 'respond'])->whereNumber('campaign')->name('questionnaires.respond');
+        Route::post('/questionnaires/{campaign}/respond', [QuestionnaireController::class, 'submit'])->whereNumber('campaign')->name('questionnaires.submit');
+        Route::post('/questionnaires/{campaign}/close', [QuestionnaireController::class, 'close'])->whereNumber('campaign')->name('questionnaires.close');
+        Route::get('/questionnaires/{campaign}/export', [QuestionnaireController::class, 'export'])->whereNumber('campaign')->name('questionnaires.export');
         Route::post('/evidence/{type}/{subject}', [EvidenceController::class, 'store'])->where(['type' => 'compliance|finding|procedure|governance', 'subject' => '[0-9]+'])->name('evidence.store');
         Route::get('/evidence/{evidence}', [EvidenceController::class, 'download'])->whereNumber('evidence')->name('evidence.download');
         Route::get('/users', [UserController::class, 'index'])->name('users.index');

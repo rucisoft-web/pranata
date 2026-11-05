@@ -8,6 +8,6 @@ return [
     'roles' => [
         'admin' => 'Administrator', 'risk_manager' => 'Manajer risiko', 'risk_owner' => 'Pemilik risiko',
         'compliance_officer' => 'Petugas kepatuhan', 'compliance_owner' => 'PIC kepatuhan',
-        'audit_manager' => 'Manajer audit', 'auditor' => 'Auditor', 'viewer' => 'Pembaca',
+        'audit_manager' => 'Manajer audit', 'auditor' => 'Auditor', 'board_member' => 'Direksi / Dewan Komisaris', 'viewer' => 'Pembaca',
     ],
 ];

@@ -23,7 +23,10 @@ class AuditFindingController extends Controller
             ->when($context->role !== 'demo_viewer', fn ($q) => $q->where('pic_id', $request->user()->id))
             ->orderBy('due_date')->limit(50)->get();
 
-        return view('audits.actions', compact('context', 'findings', 'governanceActions'));
+        $questionnaires = $context->role === 'demo_viewer' ? collect() : \App\Models\QuestionnaireAssignment::with('campaign')->where('entity_id', $context->entity->id)
+            ->where('user_id', $request->user()->id)->where('status', 'pending')->whereHas('campaign', fn ($q) => $q->where('status', 'open'))->get();
+
+        return view('audits.actions', compact('context', 'findings', 'governanceActions', 'questionnaires'));
     }
 
     public function show(Request $request, int $finding, EntityContext $context, AuditAccess $access)

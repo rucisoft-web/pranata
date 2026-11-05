@@ -32,6 +32,7 @@
 <dt>Target penerapan</dt><dd>{{ $item->target_date?->format('d/m/Y') ?? '—' }}</dd></dl>
 @endif
 <hr>
+@if($questionnaires->isNotEmpty())<h2>Bukti dari kuesioner</h2><ul class="evidence-list">@foreach($questionnaires as $campaign)<li><a href="{{ workspace_route('questionnaires.show', $campaign) }}">{{ $campaign->title }} {{ $campaign->year }}</a> <small>{{ $campaign->responses()->count() }} tanggapan · ditutup {{ $campaign->closed_at?->format('d/m/Y') }}</small></li>@endforeach</ul>@endif
 @include('components.evidence', ['subjectType' => 'governance', 'subjectId' => $item->id, 'canUpload' => $canEdit])
 </section>
 <aside class="panel detail-panel"><h2>Verifikasi</h2>
