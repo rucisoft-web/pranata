@@ -4,6 +4,8 @@ namespace App\Services;
 use App\Models\AuditEngagement;
 use App\Models\AuditFinding;
 use App\Models\AuditProcedure;
+use App\Models\GovernanceAssessment;
+use App\Models\GovernanceItem;
 use App\Models\ObligationOccurrence;
 use App\Models\User;
 use App\Support\EntityContext;
@@ -19,6 +21,20 @@ class EvidenceAccess
             if ($write) {
                 abort_unless($context->canContributeCompliance() && $record->responsible_id === $user->id, 403);
                 abort_unless(in_array($record->status, ['open', 'returned'], true), 409, 'Bukti dikunci saat pengajuan atau setelah verifikasi.');
+            }
+
+            return $record;
+        }
+        if ($type === 'governance') {
+            $stub = GovernanceItem::where('entity_id', $context->entity->id)->findOrFail($id);
+            $q = GovernanceAssessment::where('entity_id', $context->entity->id);
+            $assessment = ($write ? $q->lockForUpdate() : $q)->findOrFail($stub->governance_assessment_id);
+            $q = GovernanceItem::where('entity_id', $context->entity->id);
+            $record = ($write ? $q->lockForUpdate() : $q)->findOrFail($id);
+            if ($write) {
+                $pic = $record->pic_id === $user->id && in_array($context->role, \App\Http\Controllers\GovernanceController::PIC_ROLES, true);
+                abort_unless($context->canManageGovernance() || $pic, 403);
+                abort_unless(! $assessment->isLocked() && $record->editable(), 409, 'Bukti dikunci saat pengajuan, setelah verifikasi, atau setelah penilaian disetujui.');
             }
 
             return $record;

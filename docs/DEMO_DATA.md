@@ -14,7 +14,7 @@ Status dan nama pada contoh mengikuti profil acuan 2025; bukan verifikasi strukt
 
 ## Data sintetis
 
-Semua risiko, penilaian, kejadian, kewajiban, tanggal, PIC, kertas kerja, temuan, rekomendasi, dan bukti dibuat untuk demonstrasi. Tidak ada data pribadi pejabat nyata, data pasien, atau transaksi nyata. Kewajiban memakai sumber kebijakan simulasi, bukan klaim kewajiban hukum perusahaan.
+Semua risiko, penilaian, kejadian, kewajiban, tanggal, PIC, kertas kerja, temuan, rekomendasi, dan bukti dibuat untuk demonstrasi. Tidak ada data pribadi pejabat nyata, data pasien, atau transaksi nyata. Kewajiban memakai sumber kebijakan simulasi, bukan klaim kewajiban hukum perusahaan. Penilaian Pedoman Tata Kelola (status, alasan belum diterapkan, praktik alternatif, nomor dokumen) adalah skenario demonstrasi, bukan pengungkapan aktual dalam laporan tahunan perusahaan tersebut.
 
 Penyebutan nama perusahaan bukan klaim bahwa mereka pelanggan, pengguna, sponsor, atau pendukung PRANATA.
 

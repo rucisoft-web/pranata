@@ -135,12 +135,23 @@
 </section>
 </div>
 
+@if($governanceScore)
+<section class="panel detail-panel"><div class="section-kicker">PRANATA GOVERNANCE · {{ $governanceScore['year'] }}</div><div class="page-heading"><h2>Penerapan 25 rekomendasi Pedoman Tata Kelola</h2><a href="{{ workspace_route('governance.show', $governanceScore['id']) }}">Buka matriks →</a></div>
+<svg class="chart" viewBox="0 0 400 {{ count($governanceScore['by_aspect']) * 34 + 6 }}" role="img" aria-label="Status penerapan rekomendasi per aspek">
+@foreach($governanceScore['by_aspect'] as $aspect => $row)@php($y = $loop->index * 34 + 4)@php($x = 140)
+<text x="0" y="{{ $y + 15 }}" class="chart-label">{{ $aspect }} · {{ $row['label'] }}</text>
+@foreach(['applied', 'partial', 'not_applied', 'not_assessed'] as $st)@if($row[$st])@php($w = $row[$st] / 6 * 220)<rect x="{{ $x }}" y="{{ $y }}" width="{{ round($w, 1) }}" height="22" class="gv-{{ $st }}"><title>{{ $row['label'] }} · {{ config('governance.statuses')[$st] }}: {{ $row[$st] }}</title></rect>@php($x += $w)@endif
+@endforeach<text x="{{ $x + 6 }}" y="{{ $y + 15 }}" class="chart-value">{{ $row['index'] }}%</text>
+@endforeach</svg>
+<ul class="legend inline">@foreach(config('governance.statuses') as $key => $label)<li><i class="swatch gv-{{ $key }}"></i>{{ $label }} <strong>{{ $governanceScore[$key] }}</strong></li>@endforeach<li>Indeks <strong>{{ $governanceScore['index'] }}%</strong></li><li>Terverifikasi <strong>{{ $governanceScore['verified'] }}/25</strong></li></ul></section>
+@endif
+
 @if($group->isNotEmpty())
 <section class="panel"><div class="panel-heading"><h2>Perbandingan perusahaan dalam grup</h2></div>
-<div class="table-wrap"><table><thead><tr><th>Perusahaan</th><th>Risiko tinggi & kritis</th><th>Kepatuhan tepat waktu</th><th>Kewajiban lewat tenggat</th><th>Temuan terbuka</th><th>Penyelesaian temuan</th></tr></thead><tbody>
+<div class="table-wrap"><table><thead><tr><th>Perusahaan</th><th>Risiko tinggi & kritis</th><th>Kepatuhan tepat waktu</th><th>Kewajiban lewat tenggat</th><th>Temuan terbuka</th><th>Penyelesaian temuan</th><th>Indeks tata kelola</th></tr></thead><tbody>
 @foreach($group as $row)<tr @class(['current-row' => $row['entity']->id === $context->entity->id])><td><strong>{{ $row['entity']->name }}</strong></td><td>{{ $row['risk_high'] }} / {{ $row['risk_total'] }}</td>
 <td><div class="scorebar"><svg viewBox="0 0 100 8" aria-hidden="true"><rect width="100" height="8" rx="4" class="bar-track"></rect><rect width="{{ $row['compliance_rate'] ?? 0 }}" height="8" rx="4" class="st-fulfilled"></rect></svg><span>{{ $row['compliance_rate'] !== null ? $row['compliance_rate'].'%' : '—' }}</span></div></td>
-<td>{{ $row['compliance_overdue'] }}</td><td>{{ $row['finding_open'] }}</td><td>{{ $row['finding_closure'] !== null ? $row['finding_closure'].'%' : '—' }}</td></tr>
+<td>{{ $row['compliance_overdue'] }}</td><td>{{ $row['finding_open'] }}</td><td>{{ $row['finding_closure'] !== null ? $row['finding_closure'].'%' : '—' }}</td><td>{{ $row['governance_index'] !== null ? $row['governance_index'].'%' : '—' }}</td></tr>
 @endforeach</tbody></table></div></section>
 @endif
 

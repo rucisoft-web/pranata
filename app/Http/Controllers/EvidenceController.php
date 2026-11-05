@@ -36,7 +36,7 @@ class EvidenceController extends Controller
             throw $e;
         }
 
-        $route = match ($type) { 'compliance' => ['compliance.show', $subject], 'finding' => ['findings.show', $subject], default => ['audits.show', \App\Models\AuditProcedure::findOrFail($subject)->audit_engagement_id] };
+        $route = match ($type) { 'compliance' => ['compliance.show', $subject], 'finding' => ['findings.show', $subject], 'governance' => ['governance.items.show', $subject], default => ['audits.show', \App\Models\AuditProcedure::findOrFail($subject)->audit_engagement_id] };
 
         return redirect()->route(...$route)->with('success', 'Bukti disimpan secara privat.');
     }

@@ -64,6 +64,9 @@ class ExecutiveSummaryController extends Controller
         ]);
         $openFindings = $findings->where('status', '!=', 'closed');
 
+        $governance = \App\Models\GovernanceAssessment::where('entity_id', $entity->id)->orderByDesc('year')->first();
+        $governanceScore = $governance ? app(\App\Services\GovernanceScore::class)->summarize($governance) + ['year' => $governance->year, 'approved' => $governance->isLocked(), 'id' => $governance->id] : null;
+
         $headline = [
             'risk_total' => $risks->count(),
             'risk_high' => $byLevel['Kritis'] + $byLevel['Tinggi'],
@@ -75,10 +78,11 @@ class ExecutiveSummaryController extends Controller
             'audit_active' => $audits->whereIn('status', ['fieldwork', 'review'])->count(),
             'finding_open' => $openFindings->count(),
             'finding_overdue' => $openFindings->filter(fn ($f) => $f->due_date->lt(today()))->count(),
+            'governance_index' => $governanceScore['index'] ?? null,
             'finding_closure' => $findings->count() ? (int) round($findings->where('status', 'closed')->count() / $findings->count() * 100) : null,
         ];
 
-        return compact('headline', 'byLevel', 'byCategory', 'topRisks', 'complianceStatus', 'trend', 'overdueObligations', 'auditStatus', 'findingSeverity');
+        return compact('headline', 'byLevel', 'byCategory', 'topRisks', 'complianceStatus', 'trend', 'overdueObligations', 'auditStatus', 'findingSeverity', 'governanceScore');
     }
 
     private function narrative(array $s): array
@@ -99,6 +103,9 @@ class ExecutiveSummaryController extends Controller
         $lines[] = "Audit internal: {$h['audit_active']} penugasan berjalan, {$h['finding_open']} temuan terbuka"
             .($h['finding_overdue'] ? " ({$h['finding_overdue']} melewati tenggat tindak lanjut)" : '')
             .($h['finding_closure'] !== null ? ", tingkat penyelesaian temuan {$h['finding_closure']}%." : '.');
+        if ($g = $s['governanceScore']) {
+            $lines[] = "Pedoman Tata Kelola {$g['year']}: {$g['applied']} dari 25 rekomendasi diterapkan, {$g['partial']} sebagian, {$g['not_applied']} belum (indeks {$g['index']}%); {$g['verified']} rekomendasi telah diverifikasi".($g['approved'] ? ' dan penilaian telah disetujui.' : '.');
+        }
         if ($h['risk_review_overdue']) { $lines[] = "{$h['risk_review_overdue']} risiko melewati jadwal review dan perlu dinilai ulang oleh pemiliknya."; }
 
         return $lines;

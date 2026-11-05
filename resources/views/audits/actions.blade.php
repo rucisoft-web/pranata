@@ -5,4 +5,7 @@
 <section class="panel"><div class="table-wrap"><table><thead><tr><th>Temuan</th><th>Signifikansi</th><th>Tenggat</th><th>Status</th></tr></thead><tbody>@forelse($findings as $finding)<tr><td><a href="{{ workspace_route('findings.show', $finding) }}">{{ $finding->title }}</a></td><td>{{ config('modules.criticalities')[$finding->severity] }}</td><td>{{ $finding->due_date->format('d/m/Y') }}</td><td>{{ config('modules.finding_statuses')[$finding->status] }}</td></tr>
 @empty<tr><td colspan="4" class="empty">Tidak ada temuan untuk ditindaklanjuti.</td></tr>
 @endforelse</tbody></table></div><div class="pagination">{{ $findings->links('components.pagination') }}</div></section>
+<section class="panel"><div class="detail-panel"><div class="section-kicker">PRANATA GOVERNANCE</div><h2>Tindak lanjut tata kelola</h2></div><div class="table-wrap"><table><thead><tr><th>Tindak lanjut</th><th>Rekomendasi</th><th>PIC</th><th>Tenggat</th></tr></thead><tbody>@forelse($governanceActions as $action)<tr><td>{{ $action->title }}</td><td><a href="{{ workspace_route('governance.items.show', $action->governance_item_id) }}">{{ $action->item->code }} · {{ $action->item->assessment->year }}</a></td><td>{{ $action->pic->name }}</td><td>{{ $action->due_date->format('d/m/Y') }}@if($action->overdue()) <span class="badge high">Lewat tenggat</span>@endif</td></tr>
+@empty<tr><td colspan="4" class="empty">Tidak ada tindak lanjut tata kelola yang terbuka.</td></tr>
+@endforelse</tbody></table></div></section>
 @endsection

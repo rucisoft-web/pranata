@@ -19,7 +19,11 @@ class AuditFindingController extends Controller
             ->when(in_array($context->role, ['viewer', 'auditor'], true), fn ($q) => $q->whereRaw('1 = 0'))
             ->orderBy('due_date')->paginate(15);
 
-        return view('audits.actions', compact('context', 'findings'));
+        $governanceActions = \App\Models\GovernanceAction::with(['item.assessment', 'pic'])->where('entity_id', $context->entity->id)->where('status', 'open')
+            ->when($context->role !== 'demo_viewer', fn ($q) => $q->where('pic_id', $request->user()->id))
+            ->orderBy('due_date')->limit(50)->get();
+
+        return view('audits.actions', compact('context', 'findings', 'governanceActions'));
     }
 
     public function show(Request $request, int $finding, EntityContext $context, AuditAccess $access)

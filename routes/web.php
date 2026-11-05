@@ -13,6 +13,7 @@ use App\Http\Controllers\AuditController;
 use App\Http\Controllers\AuditFindingController;
 use App\Http\Controllers\EvidenceController;
 use App\Http\Controllers\ExecutiveSummaryController;
+use App\Http\Controllers\GovernanceController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -31,6 +32,11 @@ Route::prefix('demo')->name('demo.')->middleware(\App\Http\Middleware\DemoAccess
     Route::get('/audit-actions', [AuditFindingController::class, 'index'])->name('findings.index');
     Route::get('/audit-findings/{finding}', [AuditFindingController::class, 'show'])->whereNumber('finding')->name('findings.show');
     Route::get('/evidence/{evidence}', [EvidenceController::class, 'download'])->whereNumber('evidence')->name('evidence.download');
+    Route::get('/governance', [GovernanceController::class, 'index'])->name('governance.index');
+    Route::get('/governance/{assessment}', [GovernanceController::class, 'show'])->whereNumber('assessment')->name('governance.show');
+    Route::get('/governance/{assessment}/disclosure', [GovernanceController::class, 'disclosure'])->whereNumber('assessment')->name('governance.disclosure');
+    Route::get('/governance/{assessment}/export', [GovernanceController::class, 'export'])->whereNumber('assessment')->name('governance.export');
+    Route::get('/governance/items/{item}', [GovernanceController::class, 'item'])->whereNumber('item')->name('governance.items.show');
 });
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'create'])->name('login');
@@ -68,7 +74,19 @@ Route::middleware('auth')->group(function () {
         Route::get('/audit-actions', [AuditFindingController::class, 'index'])->name('findings.index');
         Route::get('/audit-findings/{finding}', [AuditFindingController::class, 'show'])->whereNumber('finding')->name('findings.show');
         Route::post('/audit-findings/{finding}/{operation}', [AuditFindingController::class, 'transition'])->where(['finding' => '[0-9]+', 'operation' => 'submit|close|return'])->name('findings.transition');
-        Route::post('/evidence/{type}/{subject}', [EvidenceController::class, 'store'])->where(['type' => 'compliance|finding|procedure', 'subject' => '[0-9]+'])->name('evidence.store');
+        Route::get('/governance', [GovernanceController::class, 'index'])->name('governance.index');
+        Route::post('/governance', [GovernanceController::class, 'store'])->name('governance.store');
+        Route::get('/governance/{assessment}', [GovernanceController::class, 'show'])->whereNumber('assessment')->name('governance.show');
+        Route::post('/governance/{assessment}/assign', [GovernanceController::class, 'assign'])->whereNumber('assessment')->name('governance.assign');
+        Route::post('/governance/{assessment}/approve', [GovernanceController::class, 'approve'])->whereNumber('assessment')->name('governance.approve');
+        Route::get('/governance/{assessment}/disclosure', [GovernanceController::class, 'disclosure'])->whereNumber('assessment')->name('governance.disclosure');
+        Route::get('/governance/{assessment}/export', [GovernanceController::class, 'export'])->whereNumber('assessment')->name('governance.export');
+        Route::get('/governance/items/{item}', [GovernanceController::class, 'item'])->whereNumber('item')->name('governance.items.show');
+        Route::put('/governance/items/{item}', [GovernanceController::class, 'update'])->whereNumber('item')->name('governance.items.update');
+        Route::post('/governance/items/{item}/actions', [GovernanceController::class, 'action'])->whereNumber('item')->name('governance.items.action');
+        Route::post('/governance/items/{item}/{operation}', [GovernanceController::class, 'transition'])->where(['item' => '[0-9]+', 'operation' => 'submit|verify|return'])->name('governance.items.transition');
+        Route::post('/governance/actions/{action}/done', [GovernanceController::class, 'complete'])->whereNumber('action')->name('governance.actions.done');
+        Route::post('/evidence/{type}/{subject}', [EvidenceController::class, 'store'])->where(['type' => 'compliance|finding|procedure|governance', 'subject' => '[0-9]+'])->name('evidence.store');
         Route::get('/evidence/{evidence}', [EvidenceController::class, 'download'])->whereNumber('evidence')->name('evidence.download');
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
         Route::post('/users', [UserController::class, 'store'])->name('users.store');

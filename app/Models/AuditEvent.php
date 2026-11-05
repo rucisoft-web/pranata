@@ -32,6 +32,10 @@ class AuditEvent extends Model
         'evidence.uploaded' => 'Bukti diunggah', 'evidence.downloaded' => 'Bukti diunduh',
         'user.added' => 'Pengguna ditambahkan', 'user.role_changed' => 'Peran pengguna diubah', 'user.removed' => 'Akses pengguna dicabut',
         'user.password_reset' => 'Kata sandi direset admin', 'user.mfa_reset' => 'MFA direset admin',
+        'governance.assessment_created' => 'Penilaian tata kelola dibuat', 'governance.item_updated' => 'Penilaian rekomendasi diperbarui',
+        'governance.item_submit' => 'Penilaian diajukan untuk verifikasi', 'governance.item_verify' => 'Penilaian diverifikasi',
+        'governance.item_return' => 'Penilaian dikembalikan', 'governance.assessment_approve' => 'Penilaian disetujui untuk pengungkapan',
+        'governance.action_created' => 'Tindak lanjut ditambahkan', 'governance.action_done' => 'Tindak lanjut diselesaikan',
     ];
 
     public function actor() { return $this->belongsTo(User::class, 'actor_id'); }

@@ -7,6 +7,9 @@ use App\Models\AuditFinding;
 use App\Models\AuditProcedure;
 use App\Models\Entity;
 use App\Models\EvidenceFile;
+use App\Models\GovernanceAction;
+use App\Models\GovernanceAssessment;
+use App\Models\GovernanceItem;
 use App\Models\Obligation;
 use App\Models\ObligationOccurrence;
 use App\Models\RegulatorySource;
@@ -72,6 +75,7 @@ class DemoSeeder extends Seeder
                 $this->risks($entity, $code, $sector, $risks, $people);
                 $this->compliance($entity, $code, $sector, $people);
                 $this->audits($entity, $code, $sector, $people);
+                $this->governance($entity, $code, $people);
             }
         });
     }
@@ -295,6 +299,120 @@ class DemoSeeder extends Seeder
                     'closed_at' => $findingStatus === 'closed' ? $start->copy()->addDays(95) : null,
                 ]);
                 if ($acted) { $this->evidence($entity, 'finding', $finding->id, $owner); }
+            }
+        }
+    }
+
+    /** Uraian penerapan contoh per rekomendasi (simulasi, bukan praktik aktual perusahaan). */
+    private const GOVERNANCE_PRACTICE = [
+        '1.1' => 'Tata tertib RUPS mengatur pemungutan suara terbuka dengan kartu suara dan pemungutan tertutup untuk agenda yang menyangkut orang. Perhitungan suara dilakukan Notaris dan Biro Administrasi Efek secara independen, termasuk suara melalui eASY.KSEI.',
+        '1.2' => 'Seluruh anggota Direksi dan Dewan Komisaris hadir dalam RUPS Tahunan sebagaimana tercatat dalam daftar hadir dan risalah RUPS.',
+        '1.3' => 'Ringkasan risalah RUPS diunggah ke situs web pada hari kerja kedua setelah RUPS dan tetap tersedia di arsip Hubungan Investor.',
+        '2.1' => 'Kebijakan Komunikasi dengan Pemegang Saham dan Investor ditetapkan Direksi, mencakup paparan publik, analyst meeting, kunjungan investor, dan kanal pertanyaan.',
+        '2.2' => 'Kebijakan komunikasi dimuat di menu Hubungan Investor situs web dan dirujuk dalam bab Tata Kelola laporan tahunan.',
+        '3.1' => 'Jumlah anggota Dewan Komisaris ditetapkan RUPS dengan mempertimbangkan ukuran, kompleksitas usaha, dan kebutuhan pengawasan anak perusahaan.',
+        '3.2' => 'Komposisi Dewan Komisaris disusun berdasarkan matriks keahlian (keuangan, hukum, industri, teknologi) yang dikaji Komite Nominasi dan Remunerasi.',
+        '4.1' => 'Dewan Komisaris memiliki kebijakan self assessment tahunan dengan kriteria pelaksanaan tugas pengawasan, kehadiran rapat, dan kontribusi komite.',
+        '4.2' => 'Kriteria dan prosedur self assessment Dewan Komisaris diungkapkan dalam laporan tahunan bab Tata Kelola.',
+        '4.3' => 'Pedoman Kerja Dewan Komisaris memuat kewajiban mengundurkan diri bagi anggota yang terlibat kejahatan keuangan.',
+        '4.4' => 'Komite Nominasi dan Remunerasi menyusun kebijakan suksesi Direksi yang mencakup talent pool, kriteria calon, dan jadwal kajian tahunan.',
+        '5.1' => 'Jumlah anggota Direksi ditetapkan dengan mempertimbangkan struktur organisasi, lini usaha, dan efektivitas pengambilan keputusan.',
+        '5.2' => 'Komposisi Direksi memperhatikan keberagaman keahlian operasional, keuangan, pemasaran, dan teknologi berdasarkan matriks kompetensi.',
+        '5.3' => 'Direktur Keuangan berlatar belakang akuntansi dan memegang sertifikasi profesi akuntan.',
+        '6.1' => 'Direksi memiliki kebijakan self assessment berbasis KPI kolegial dan individu yang dievaluasi setiap akhir tahun buku.',
+        '6.2' => 'Kriteria dan prosedur penilaian kinerja Direksi diungkapkan dalam laporan tahunan.',
+        '6.3' => 'Pedoman Kerja Direksi memuat kewajiban mengundurkan diri bagi anggota yang terlibat kejahatan keuangan.',
+        '7.1' => 'Kebijakan Perdagangan Saham oleh Orang Dalam mengatur periode blackout, daftar orang dalam, dan kewajiban pelaporan transaksi.',
+        '7.2' => 'Kebijakan Anti Korupsi dan Anti Fraud ditetapkan, didukung program pengendalian gratifikasi dan pernyataan kepatuhan tahunan.',
+        '7.3' => 'Kebijakan pengadaan mengatur seleksi, evaluasi kinerja, dan program pengembangan kemampuan vendor.',
+        '7.4' => 'Kebijakan pengelolaan pendanaan mengatur pemenuhan kewajiban dan hak kreditur, termasuk pemantauan covenant setiap triwulan.',
+        '7.5' => 'Kebijakan Whistleblowing System menyediakan saluran pelaporan independen dengan perlindungan kerahasiaan pelapor.',
+        '7.6' => 'Program insentif jangka panjang bagi Direksi dan karyawan kunci ditetapkan dalam kebijakan remunerasi dan disetujui RUPS.',
+        '8.1' => 'Selain situs web, informasi disampaikan melalui media sosial resmi, siaran pers digital, dan paparan publik daring.',
+        '8.2' => 'Laporan tahunan mengungkapkan pemilik manfaat akhir atas kepemilikan saham paling sedikit 5% berdasarkan data Biro Administrasi Efek.',
+    ];
+
+    /** Rekomendasi yang belum penuh diterapkan: [status 2025, status 2026, alasan, praktik alternatif, tindak lanjut]. */
+    private const GOVERNANCE_GAPS = [
+        'KAEF' => [
+            '4.4' => ['partial', 'partial', 'Kebijakan suksesi Direksi masih mengikuti mekanisme penilaian calon oleh Pemegang Saham Seri A Dwiwarna, sehingga Komite Nominasi dan Remunerasi baru menyusun usulan talent pool internal.', 'Komite Nominasi dan Remunerasi menyampaikan daftar kandidat internal kepada pemegang saham setiap tahun.', 'Menyusun kebijakan suksesi Direksi tertulis'],
+            '7.6' => ['not_applied', 'partial', 'Program insentif jangka panjang masih dalam kajian bersama pemegang saham pengendali dan menunggu kebijakan remunerasi grup.', 'Remunerasi variabel tahunan dikaitkan dengan KPI jangka menengah.', 'Mengajukan program LTI kepada RUPS Tahunan'],
+            '8.2' => ['partial', 'applied', 'Pengungkapan pemilik manfaat akhir baru mencakup pemegang saham pengendali; data pemegang saham institusi di atas 5% masih ditelusuri.', 'Perseroan mengungkapkan bagan kepemilikan sampai pemegang saham pengendali.', null],
+            '1.2' => ['applied', 'partial', 'Satu anggota Dewan Komisaris berhalangan hadir pada RUPS Tahunan karena penugasan negara yang tidak dapat diwakilkan.', 'Anggota yang berhalangan memberikan tanggapan tertulis atas agenda RUPS yang dibacakan dalam rapat.', null],
+        ],
+        'HEAL' => [
+            '3.2' => ['partial', 'applied', 'Komposisi Dewan Komisaris belum memiliki anggota berlatar belakang teknologi informasi kesehatan.', 'Dewan Komisaris memanfaatkan tenaga ahli independen untuk kajian teknologi.', null],
+            '4.4' => ['not_applied', 'partial', 'Fungsi nominasi baru dijalankan secara terpisah pada tahun berjalan sehingga kebijakan suksesi Direksi belum ditetapkan.', 'Direksi menyiapkan program pengembangan pimpinan rumah sakit sebagai talent pool.', 'Menetapkan kebijakan suksesi Direksi'],
+            '7.6' => ['not_applied', 'not_applied', 'Perseroan belum memberikan insentif jangka panjang karena struktur remunerasi masih berbasis kinerja tahunan dan program kepemilikan saham karyawan belum disetujui.', 'Bonus kinerja tahunan dengan sebagian pembayaran ditangguhkan.', 'Kajian program MESOP bersama konsultan remunerasi'],
+            '8.1' => ['partial', 'applied', 'Kanal keterbukaan informasi selain situs web baru berupa media sosial korporat dan belum mencakup paparan publik daring.', 'Paparan publik tahunan direkam dan diunggah ke situs web.', null],
+        ],
+        'PWON' => [
+            '5.2' => ['partial', 'partial', 'Komposisi Direksi didominasi latar belakang properti dan keuangan; keahlian teknologi digital sedang dipenuhi melalui rekrutmen.', 'Direksi dibantu Chief Digital Officer non-direksi untuk inisiatif teknologi.', 'Usulan penambahan direktur berlatar teknologi'],
+            '7.6' => ['not_applied', 'not_applied', 'Perseroan belum menerapkan program insentif jangka panjang dan memilih skema bonus tahunan yang disesuaikan dengan siklus proyek properti.', 'Bonus proyek dibayarkan bertahap sesuai serah terima unit.', 'Kajian skema LTI berbasis saham'],
+            '1.2' => ['partial', 'applied', 'Dua anggota Dewan Komisaris berhalangan hadir dalam RUPS Tahunan karena alasan kesehatan dan perjalanan dinas.', 'Ketidakhadiran diumumkan dalam rapat beserta alasannya.', null],
+            '4.3' => ['partial', 'applied', 'Ketentuan pengunduran diri anggota Dewan Komisaris bila terlibat kejahatan keuangan belum dimuat secara eksplisit dalam pedoman kerja.', 'Ketentuan anggaran dasar dan peraturan perundang-undangan tetap berlaku.', null],
+        ],
+    ];
+
+    private function governance(Entity $entity, string $code, array $people): void
+    {
+        $functionPic = ['Sekretaris Perusahaan' => 'pic', 'Investor Relations' => 'pic-2', 'Komunikasi Korporat' => 'pic-2', 'Sekretariat Dewan Komisaris' => 'pic-2',
+            'Komite Nominasi dan Remunerasi' => 'owner-2', 'Human Capital' => 'owner-2', 'Kepatuhan' => 'pic', 'Pengadaan' => 'owner', 'Keuangan dan Treasury' => 'owner'];
+        $officer = $people['compliance'];
+        $year = (int) now()->format('Y');
+        $gaps = self::GOVERNANCE_GAPS[$code];
+        // Tahun berjalan: 13 terverifikasi, 5 menunggu, 2 dikembalikan, sisanya masih disusun (2 belum dinilai, 1 tanpa PIC).
+        $currentReview = ['1.1' => 'verified', '1.2' => 'submitted', '1.3' => 'verified', '2.1' => 'verified', '2.2' => 'verified', '3.1' => 'verified', '3.2' => 'submitted',
+            '4.1' => 'verified', '4.2' => 'verified', '4.3' => 'returned', '4.4' => 'submitted', '5.1' => 'verified', '5.2' => 'submitted', '5.3' => 'verified',
+            '6.1' => 'verified', '6.2' => 'verified', '6.3' => 'draft', '7.1' => 'verified', '7.2' => 'verified', '7.3' => 'draft', '7.4' => 'draft',
+            '7.5' => 'verified', '7.6' => 'returned', '8.1' => 'submitted', '8.2' => 'draft'];
+        foreach ([$year - 1 => 'approved', $year => 'open'] as $assessmentYear => $status) {
+            $assessment = GovernanceAssessment::firstOrCreate(['entity_id' => $entity->id, 'year' => $assessmentYear], [
+                'status' => $status, 'coordinator_id' => $officer->id, 'created_by' => $officer->id,
+                'approval_note' => $status === 'approved' ? 'Disetujui dalam Rapat Direksi '.($assessmentYear + 1).' untuk dimuat dalam Laporan Tahunan '.$assessmentYear.' (simulasi).' : null,
+                'approved_by' => $status === 'approved' ? $officer->id : null, 'approved_at' => $status === 'approved' ? now()->setDate($assessmentYear + 1, 3, 12) : null,
+            ]);
+            if ($assessment->wasRecentlyCreated) { $this->event($entity, 'governance_assessments', $assessment->id, 'governance.assessment_created', $officer, now()->setDate($assessmentYear, 11, 3)); }
+            foreach (config('governance.recommendations') as $rec => $definition) {
+                $gap = $gaps[$rec] ?? null;
+                $itemStatus = $gap ? $gap[$status === 'approved' ? 0 : 1] : 'applied';
+                $review = $status === 'approved' ? 'verified' : $currentReview[$rec];
+                $submittedAt = $status === 'approved' ? now()->setDate($assessmentYear, 12, 2) : now()->subDays(24 - (int) str_replace('.', '', $rec) % 9);
+                $reviewedAt = $submittedAt->copy()->addDays(5);
+                if ($status === 'open' && in_array($rec, ['7.4', '8.2'], true)) { $itemStatus = 'not_assessed'; }
+                $pic = $status === 'open' && $rec === '7.3' ? null : $people[$functionPic[$definition[3]]];
+                $explained = in_array($itemStatus, ['partial', 'not_applied'], true);
+                $item = GovernanceItem::firstOrCreate(['governance_assessment_id' => $assessment->id, 'code' => $rec], [
+                    'entity_id' => $entity->id, 'status' => $itemStatus, 'pic_id' => $pic?->id,
+                    'implementation' => $itemStatus === 'not_assessed' ? null : ($itemStatus === 'not_applied' ? null : self::GOVERNANCE_PRACTICE[$rec]),
+                    'evidence_note' => $itemStatus === 'applied' ? 'Dokumen '.$definition[3].' '.$code.'-GCG-'.str_replace('.', '', $rec).'/'.$assessmentYear.' (simulasi).' : null,
+                    'explanation' => $explained ? $gap[2] : null, 'alternative_practice' => $explained ? $gap[3] : null,
+                    'target_date' => $explained && $gap[4] ? now()->setDate($assessmentYear + 1, 12, 31)->toDateString() : null,
+                    'review_status' => $review,
+                    'submitted_at' => in_array($review, ['submitted', 'verified', 'returned'], true) ? $submittedAt : null,
+                    'submitted_by' => in_array($review, ['submitted', 'verified', 'returned'], true) ? $pic?->id : null,
+                    'review_note' => match ($review) { 'verified' => 'Bukti dan uraian sesuai dengan dokumen yang berlaku.', 'returned' => 'Lengkapi nomor dan tanggal pengesahan kebijakan serta perbarui alasan sesuai kondisi tahun berjalan.', default => null },
+                    'reviewed_by' => in_array($review, ['verified', 'returned'], true) ? $officer->id : null,
+                    'reviewed_at' => in_array($review, ['verified', 'returned'], true) ? $reviewedAt : null,
+                ]);
+                if (! $item->wasRecentlyCreated) { continue; }
+                if ($pic && $itemStatus === 'applied' && (int) str_replace('.', '', $rec) % 3 !== 0) { $this->evidence($entity, 'governance', $item->id, $pic); }
+                if ($pic && $review !== 'draft') { $this->event($entity, 'governance_items', $item->id, 'governance.item_submit', $pic, $item->submitted_at); }
+                if (in_array($review, ['verified', 'returned'], true)) { $this->event($entity, 'governance_items', $item->id, 'governance.item_'.($review === 'verified' ? 'verify' : 'return'), $officer, $item->reviewed_at); }
+                if ($explained && $gap[4]) {
+                    $done = $status === 'approved';
+                    GovernanceAction::firstOrCreate(['governance_item_id' => $item->id, 'title' => $gap[4]], [
+                        'entity_id' => $entity->id, 'pic_id' => $pic->id, 'created_by' => $officer->id,
+                        'due_date' => $done ? now()->setDate($assessmentYear, 10, 31) : today()->subDays(12),
+                        'status' => $done ? 'done' : 'open', 'completed_at' => $done ? now()->setDate($assessmentYear, 10, 20) : null,
+                        'completion_note' => $done ? 'Draf kebijakan disampaikan kepada Direksi; pengesahan dijadwalkan tahun berikutnya.' : null,
+                    ]);
+                    if (! $done) {
+                        GovernanceAction::firstOrCreate(['governance_item_id' => $item->id, 'title' => 'Sosialisasi rencana penerapan kepada Dewan Komisaris'], [
+                            'entity_id' => $entity->id, 'pic_id' => $pic->id, 'created_by' => $officer->id, 'due_date' => today()->addDays(45), 'status' => 'open',
+                        ]);
+                    }
+                }
             }
         }
     }

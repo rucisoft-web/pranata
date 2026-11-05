@@ -19,13 +19,14 @@
             <a class="{{ request()->routeIs('risks.*', 'demo.risks.*') ? 'active' : '' }}" href="{{ workspace_route('risks.index') }}">Manajemen risiko</a>
             <a class="{{ request()->routeIs('obligations.*', 'demo.obligations.*') ? 'active' : '' }}" href="{{ workspace_route('obligations.index') }}">Register kewajiban</a>
             <a class="{{ request()->routeIs('compliance.*', 'demo.compliance.*') ? 'active' : '' }}" href="{{ workspace_route('compliance.index') }}">Kalender kepatuhan</a>
+            <a class="{{ request()->routeIs('governance.*', 'demo.governance.*') ? 'active' : '' }}" href="{{ workspace_route('governance.index') }}">Governance</a>
             @if($context->canReadAudit())<a class="{{ request()->routeIs('audits.*', 'demo.audits.*') ? 'active' : '' }}" href="{{ workspace_route('audits.index') }}">Audit internal</a>
 @endif
             <a class="{{ request()->routeIs('findings.*', 'demo.findings.*') ? 'active' : '' }}" href="{{ workspace_route('findings.index') }}">Tindak lanjut saya</a>
             @if($context->canManageUsers() && ! request()->attributes->get('demo_mode'))<a class="{{ request()->routeIs('users.*') ? 'active' : '' }}" href="{{ route('users.index') }}">Pengguna & akses</a>
 @endif
         </nav>
-        <div class="sidebar-note">GRC korporasi<br><small>Risiko · kepatuhan · audit</small></div>
+        <div class="sidebar-note">GRC korporasi<br><small>Tata kelola · risiko · kepatuhan · audit</small></div>
         <div class="sidebar-footer">by <strong>Rucisoft</strong><br><small>Tata Kelola Terarah.<br>Risiko Terkendali.</small></div>
     </aside>
     <div class="workspace">
